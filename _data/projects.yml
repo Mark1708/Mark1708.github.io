@@ -1,0 +1,6 @@
+- layout: top-middle
+  name: Ranking STR data
+  github: Mark1708/Ranking-STR-data
+  description: | # this will include new lines to allow paragraphs
+    The utility evaluates TMRCA (Time to the Most Recent Common Ancestor) by Y-STR loci and then performs ranking relative to the base haplotype.
+  

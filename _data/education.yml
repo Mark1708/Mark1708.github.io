@@ -1,0 +1,16 @@
+- layout: left
+  name: ITMO University. St. Petersburg, Russia.
+  dates: 2019 - Present
+  qualification: BSc Computer Science
+  # quote: >
+  #   Established in 1636, Harvard is the oldest higher education institution in the United States, and is widely regarded in terms of its influence, reputation, and academic pedigree as a leading university in not just the US but also the world.
+  description: | # this will include new lines to allow paragraphs
+    Second-year student, megafaculty of Computer Technologies and Management, faculty of Software Engineering and Computer Engineering, Department of Neurotechnology and Programming.
+- layout: left
+  name: Skillbox
+  dates: 2020 - Present
+  qualification: Profession Java Developer PRO
+  # quote: >
+  #   Established in 1636, Harvard is the oldest higher education institution in the United States, and is widely regarded in terms of its influence, reputation, and academic pedigree as a leading university in not just the US but also the world.
+  description: | # this will include new lines to allow paragraphs
+    You can read about it here - [link](https://skillbox.ru/course/java-dev/)
