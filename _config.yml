@@ -3,7 +3,7 @@ repository: sproogen/resume-theme
 favicon: images/favicon.ico
 
 # Content configuration version
-version: 2
+# version: 2
 
 # Personal info
 name: Mark Gurianov
@@ -32,7 +32,7 @@ linkedin_username: mark-gurianov-605616201
 # Additional icon links
 additional_links:
   - title: "Telegram"
-    icon: "fa-telegram-plane"
+    icon: "fa-telegram"
     url: "https://t.me/MarkStav"
   - title: "Vk"
     icon: "fa-vk"
@@ -61,8 +61,8 @@ content:
     layout: list # Type of content section (list/text)
     content:
       - layout: top-middle
-        title: Ranking STR data
-        github: https://github.com/Mark1708/Ranking-STR-data
+        name: Ranking STR data
+        github: Mark1708/Ranking-STR-data
         # link_text: Project Website
         # additional_links:
         #   - title:  sproogen/modern-resume-theme
