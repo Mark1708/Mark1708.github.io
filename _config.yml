@@ -61,8 +61,8 @@ content:
     layout: list # Type of content section (list/text)
     content:
       - layout: top-middle
-        title: Ranking an array of STR data
-        link: https://github.com/Mark1708/Ranking-STR-data
+        title: Ranking STR data
+        github: https://github.com/Mark1708/Ranking-STR-data
         # link_text: Project Website
         # additional_links:
         #   - title:  sproogen/modern-resume-theme
