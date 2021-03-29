@@ -1,4 +1,9 @@
 - layout: top-middle
+  name: spring-boot-basic-microservice
+  github: Mark1708/spring-boot-basic-microservice
+  description: | # this will include new lines to allow paragraphs
+    This is a simple microservice architecture for converting and pricing currencies, built with Spring Boot and Spring Cloud.
+- layout: top-middle
   name: Ranking STR data
   github: Mark1708/Ranking-STR-data
   description: | # this will include new lines to allow paragraphs
