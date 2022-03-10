@@ -1,4 +1,9 @@
 - layout: top-middle
+  name: e-commerce-backend
+  github: Mark1708/e-commerce-backend
+  description: | # this will include new lines to allow paragraphs
+    This is a web application for an educational project on creating an online store with microservice architecture, at the moment the project is not finished yet.
+- layout: top-middle
   name: spring-boot-basic-microservice
   github: Mark1708/spring-boot-basic-microservice
   description: | # this will include new lines to allow paragraphs
@@ -8,4 +13,13 @@
   github: Mark1708/Ranking-STR-data
   description: | # this will include new lines to allow paragraphs
     The utility evaluates TMRCA (Time to the Most Recent Common Ancestor) by Y-STR loci and then performs ranking relative to the base haplotype.
-  
+- layout: top-middle
+  name: multithreaded-image-resizer
+  github: Mark1708/multithreaded-image-resizer
+  description: | # this will include new lines to allow paragraphs
+    This console application allows you to increase and decrease the size of the original image(s).
+- layout: top-middle
+  name: algorithms-and-data-structures
+  github: Mark1708/algorithms-and-data-structures
+  description: | # this will include new lines to allow paragraphs
+    This project was implemented for educational purposes to master one of the most important topics in programming.
