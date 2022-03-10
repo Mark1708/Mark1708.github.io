@@ -27,10 +27,10 @@ linkedin_username: mark-gurianov-605616201
 # Additional icon links
 additional_links:
   - title: "Telegram"
-    icon: "fa-telegram"
+    icon: "telegram"
     url: "https://t.me/MarkStav"
   - title: "Vk"
-    icon: "fa-vk"
+    icon: "vk"
     url: "https://vk.com/mgurianov"
 
 
