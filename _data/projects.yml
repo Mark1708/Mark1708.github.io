@@ -1,4 +1,9 @@
 - layout: top-middle
+  name: spring-boot-deploy-with-nginx-example
+  github: Mark1708/spring-boot-deploy-with-nginx-example
+  description: | # this will include new lines to allow paragraphs
+    Guide for deploying a Spring Boot project to an Ubuntu virtual machine using an Nginx web server and generating an SSL certificate
+- layout: top-middle
   name: e-commerce-backend
   github: Mark1708/e-commerce-backend
   description: | # this will include new lines to allow paragraphs
