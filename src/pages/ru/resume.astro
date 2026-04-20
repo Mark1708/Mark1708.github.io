@@ -148,6 +148,22 @@ const projects   = (await getCollection('projects')).sort((a, b) => a.data.order
         ))}
       </div>
 
+      <h2 class="section-heading">Образование</h2>
+      <div class="job">
+        <div class="job-top">
+          <span class="job-company">СПбНИУ ИТМО</span>
+          <span class="job-period">2019 — 2023</span>
+        </div>
+        <p class="job-role">Бакалавр · Нейротехнологии и программирование</p>
+      </div>
+      <div class="job">
+        <div class="job-top">
+          <span class="job-company">ИТМО + VK Cloud Solutions</span>
+          <span class="job-period">2023</span>
+        </div>
+        <p class="job-role">Курс · Облачные технологии (Kubernetes)</p>
+      </div>
+
       <h2 class="section-heading">Pet Projects</h2>
       {projects.map(p => (
         <div class="project">

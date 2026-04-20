@@ -23,6 +23,10 @@
     {
       "name": "DevOps & Infra",
       "items": ["Kubernetes", "Docker", "Ansible", "GitLab CI/CD", "GitHub Actions", "Jenkins", "Prometheus + Grafana"]
+    },
+    {
+      "name": "Languages",
+      "items": ["Russian (Native)", "English (B2)"]
     }
   ]
 }

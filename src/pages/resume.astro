@@ -268,6 +268,23 @@ const projects   = (await getCollection('projects')).sort((a, b) => a.data.order
         ))}
       </div>
 
+      <!-- Education -->
+      <h2 class="section-heading">Education</h2>
+      <div class="job">
+        <div class="job-top">
+          <span class="job-company">ITMO University</span>
+          <span class="job-period">2019 – 2023</span>
+        </div>
+        <p class="job-role">Bachelor's Degree · Neural Technologies & Programming</p>
+      </div>
+      <div class="job">
+        <div class="job-top">
+          <span class="job-company">ITMO University + VK Cloud Solutions</span>
+          <span class="job-period">2023</span>
+        </div>
+        <p class="job-role">Course · Cloud Technologies (Kubernetes)</p>
+      </div>
+
       <!-- Projects -->
       <h2 class="section-heading">Open Source</h2>
       {projects.map(p => (
