@@ -1,0 +1,28 @@
+{
+  "categories": [
+    {
+      "name": "Core Languages",
+      "items": ["Java 8–21", "Kotlin", "Go", "TypeScript", "Python"]
+    },
+    {
+      "name": "Frameworks",
+      "items": ["Spring Boot", "Spring Cloud", "Spring Security", "Spring JPA", "Micronaut", "Quarkus", "Apache Spark"]
+    },
+    {
+      "name": "Databases",
+      "items": ["PostgreSQL", "Redis", "ClickHouse", "MongoDB", "Elasticsearch / OpenSearch", "Timescale", "PostGIS"]
+    },
+    {
+      "name": "Messaging",
+      "items": ["Apache Kafka", "RabbitMQ", "Eclipse Mosquitto"]
+    },
+    {
+      "name": "Security",
+      "items": ["Keycloak", "OAuth2 / OIDC", "Spring Security", "JWT"]
+    },
+    {
+      "name": "DevOps & Infra",
+      "items": ["Kubernetes", "Docker", "Ansible", "GitLab CI/CD", "GitHub Actions", "Jenkins", "Prometheus + Grafana"]
+    }
+  ]
+}

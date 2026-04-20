@@ -1,0 +1,229 @@
+---
+import { useTranslations, type Lang } from '../../i18n/ui';
+import social from '../../data/social.json';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const isRu = lang === 'ru';
+const title = isRu ? social.titleRu : social.title;
+const bio = isRu ? social.bioRu : social.bio;
+---
+
+<section class="hero" aria-labelledby="hero-name">
+  <div class="container">
+    <div class="hero__inner">
+      <div class="hero__content">
+        <p class="hero__eyebrow">
+          <span class="hero__dot"></span>
+          {t('hero.available')}
+        </p>
+
+        <h1 id="hero-name" class="hero__name">{isRu ? social.name : social.nameEn}</h1>
+
+        <div class="hero__titles">
+          <p class="hero__title">{title}</p>
+          <p class="hero__subtitle">{isRu ? social.subtitleRu : social.subtitle}</p>
+        </div>
+
+        <p class="hero__bio">{bio}</p>
+
+        <div class="hero__links">
+          {social.links.map(link => (
+            <a href={link.url} class="hero__link" target="_blank" rel="noopener noreferrer" aria-label={link.label}>
+              <span class="hero__link-label">{link.label}</span>
+            </a>
+          ))}
+          <a href={`mailto:${social.email}`} class="hero__link hero__link--email">
+            <span class="hero__link-label">{social.email}</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero__visual" aria-hidden="true">
+        <div class="hero__code-block">
+          <pre><code><span class="kw">class</span> <span class="cn">MarkGurianov</span> <span class="op">&#123;</span>
+  <span class="kw">val</span> role <span class="op">=</span> <span class="st">"Team Lead → Architect"</span>
+  <span class="kw">val</span> stack <span class="op">=</span> listOf(
+    <span class="st">"Java 21"</span>, <span class="st">"Spring Boot"</span>,
+    <span class="st">"Kubernetes"</span>, <span class="st">"Kafka"</span>
+  )
+  <span class="kw">val</span> experience <span class="op">=</span> <span class="st">"5+ years"</span>
+<span class="op">&#125;</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    min-height: calc(100svh - 52px);
+    display: flex;
+    align-items: center;
+    padding-block: var(--space-16);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 70% 40%, var(--color-accent-glow), transparent);
+    pointer-events: none;
+  }
+
+  .hero__inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: center;
+  }
+
+  .hero__eyebrow {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-6);
+  }
+
+  .hero__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .hero__name {
+    font-family: var(--font-display);
+    font-size: var(--text-hero);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    color: var(--color-text);
+    margin-bottom: var(--space-4);
+  }
+
+  .hero__titles { margin-bottom: var(--space-6); }
+
+  .hero__title {
+    font-size: var(--text-xl);
+    font-weight: 500;
+    color: var(--color-text);
+    line-height: 1.3;
+  }
+
+  .hero__subtitle {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-accent);
+    margin-top: var(--space-1);
+  }
+
+  .hero__bio {
+    color: var(--color-text-muted);
+    max-width: 48ch;
+    margin-bottom: var(--space-8);
+    line-height: 1.7;
+  }
+
+  .hero__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+  }
+
+  .hero__link {
+    display: inline-flex;
+    align-items: center;
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    transition:
+      border-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out),
+      transform var(--duration-fast) var(--ease-out);
+  }
+
+  .hero__link:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: translateY(-2px);
+    opacity: 1;
+  }
+
+  .hero__link--email {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .hero__visual {
+    display: flex;
+    justify-content: center;
+  }
+
+  .hero__code-block {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-8);
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero__code-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+  }
+
+  pre { margin: 0; overflow-x: auto; }
+
+  code {
+    font-size: var(--text-sm);
+    line-height: 1.8;
+    color: var(--color-text-muted);
+  }
+
+  .kw { color: var(--color-kw); }
+  .cn { color: var(--color-cn); }
+  .st { color: var(--color-st); }
+  .op { color: var(--color-text-muted); }
+
+  @media (max-width: 768px) {
+    .hero__inner {
+      grid-template-columns: 1fr;
+      gap: var(--space-12);
+    }
+    .hero__visual { order: -1; }
+    .hero__code-block { max-width: 100%; }
+  }
+
+  @media print {
+    .hero { min-height: unset; padding-block: var(--space-8); }
+    .hero__visual { display: none; }
+    .hero__links { display: none; }
+    .hero__inner { grid-template-columns: 1fr; }
+  }
+</style>

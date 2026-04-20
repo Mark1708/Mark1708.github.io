@@ -1,0 +1,321 @@
+---
+import { getLangFromUrl, getRouteForLang, useTranslations, languages, type Lang } from '../../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const enUrl = getRouteForLang(Astro.url, 'en');
+const ruUrl = getRouteForLang(Astro.url, 'ru');
+const resumeUrl = lang === 'ru' ? '/ru/resume' : '/resume';
+---
+
+<header class="navbar" role="banner">
+  <nav class="navbar__inner container" aria-label="Site navigation">
+    <a href={lang === 'ru' ? '/ru' : '/'} class="navbar__logo" aria-label="Home">MG</a>
+
+    <div class="navbar__controls">
+
+      <!-- Language toggle -->
+      <div class="toggle-group" role="group" aria-label="Language">
+        <a href={enUrl} class={`toggle-btn${lang === 'en' ? ' toggle-btn--active' : ''}`} aria-current={lang === 'en' ? 'page' : undefined}>
+          EN
+        </a>
+        <a href={ruUrl} class={`toggle-btn${lang === 'ru' ? ' toggle-btn--active' : ''}`} aria-current={lang === 'ru' ? 'page' : undefined}>
+          RU
+        </a>
+      </div>
+
+      <!-- Theme toggle -->
+      <div class="toggle-group" role="group" aria-label="Theme">
+        <button class="toggle-btn theme-btn" data-theme-value="system" title={t('nav.theme.system')}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+          <span class="toggle-btn__label">{t('nav.theme.system')}</span>
+        </button>
+        <button class="toggle-btn theme-btn" data-theme-value="dark" title={t('nav.theme.dark')}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <span class="toggle-btn__label">{t('nav.theme.dark')}</span>
+        </button>
+        <button class="toggle-btn theme-btn" data-theme-value="light" title={t('nav.theme.light')}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+          </svg>
+          <span class="toggle-btn__label">{t('nav.theme.light')}</span>
+        </button>
+      </div>
+
+      <!-- Export dropdown -->
+      <div class="export-dropdown" id="export-dropdown">
+        <button class="export-trigger" id="export-trigger" aria-haspopup="true" aria-expanded="false">
+          {t('nav.export.label')}
+          <svg class="export-trigger__chevron" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="export-menu" role="menu" aria-label={t('nav.export.label')}>
+          <button class="export-menu__item" id="btn-export-pdf" role="menuitem">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+            </svg>
+            {t('nav.export.pdf')}
+          </button>
+          <button class="export-menu__item" id="btn-export-html" role="menuitem">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+            </svg>
+            {t('nav.export.html')}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+</header>
+
+<script define:vars={{ resumeUrl }}>
+  const THEME_KEY = 'portfolio-theme';
+
+  /* ── Theme ── */
+  function applyTheme(value) {
+    const root = document.documentElement;
+    root.removeAttribute('data-theme');
+    if (value !== 'system') root.setAttribute('data-theme', value);
+    document.querySelectorAll('.theme-btn').forEach(btn => {
+      btn.classList.toggle('toggle-btn--active', btn.dataset.themeValue === value);
+    });
+    localStorage.setItem(THEME_KEY, value);
+  }
+
+  applyTheme(localStorage.getItem(THEME_KEY) ?? 'system');
+
+  document.querySelectorAll('.theme-btn').forEach(btn => {
+    btn.addEventListener('click', () => applyTheme(btn.dataset.themeValue ?? 'system'));
+  });
+
+  /* ── Export dropdown ── */
+  const trigger = document.getElementById('export-trigger');
+  const dropdown = document.getElementById('export-dropdown');
+
+  trigger?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const expanded = trigger.getAttribute('aria-expanded') === 'true';
+    trigger.setAttribute('aria-expanded', String(!expanded));
+    dropdown?.classList.toggle('export-dropdown--open', !expanded);
+  });
+
+  document.addEventListener('click', () => {
+    trigger?.setAttribute('aria-expanded', 'false');
+    dropdown?.classList.remove('export-dropdown--open');
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      trigger?.setAttribute('aria-expanded', 'false');
+      dropdown?.classList.remove('export-dropdown--open');
+    }
+  });
+
+  /* ── PDF export ── */
+  document.getElementById('btn-export-pdf')?.addEventListener('click', () => {
+    dropdown?.classList.remove('export-dropdown--open');
+    trigger?.setAttribute('aria-expanded', 'false');
+    const win = window.open(resumeUrl + '?print=1', '_blank');
+    // resume page auto-prints when ?print=1 is present
+  });
+
+  /* ── HTML export ── */
+  document.getElementById('btn-export-html')?.addEventListener('click', async () => {
+    dropdown?.classList.remove('export-dropdown--open');
+    trigger?.setAttribute('aria-expanded', 'false');
+    try {
+      const res = await fetch(resumeUrl);
+      const html = await res.text();
+      const blob = new Blob([html], { type: 'text/html; charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'mark-gurianov-resume.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('HTML export failed', err);
+    }
+  });
+</script>
+
+<style>
+  .navbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: color-mix(in oklch, var(--color-bg) 85%, transparent);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .navbar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+  }
+
+  .navbar__logo {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: 800;
+    color: var(--color-accent);
+    letter-spacing: -0.02em;
+  }
+  .navbar__logo:hover { opacity: 0.8; }
+
+  .navbar__controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  /* ── Shared toggle group ── */
+  .toggle-group {
+    display: flex;
+    align-items: center;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 2px;
+    gap: 1px;
+  }
+
+  .toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    border-radius: calc(var(--radius-md) - 3px);
+    border: none;
+    background: none;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+      background var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+    line-height: 1.6;
+  }
+
+  .toggle-btn--active {
+    background: var(--color-accent-dim);
+    color: var(--color-accent);
+  }
+
+  .toggle-btn:hover:not(.toggle-btn--active) {
+    color: var(--color-text);
+  }
+
+  .toggle-btn__label {
+    display: none;
+  }
+  @media (min-width: 600px) {
+    .toggle-btn__label { display: inline; }
+  }
+
+  /* ── Export dropdown ── */
+  .export-dropdown {
+    position: relative;
+  }
+
+  .export-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      border-color var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+
+  .export-trigger:hover,
+  .export-dropdown--open .export-trigger {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  .export-trigger__chevron {
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  .export-dropdown--open .export-trigger__chevron {
+    transform: rotate(180deg);
+  }
+
+  .export-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    min-width: 140px;
+    background: var(--color-surface-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 4px;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    box-shadow: 0 8px 24px oklch(0% 0 0 / 0.3);
+    z-index: 10;
+  }
+
+  .export-dropdown--open .export-menu {
+    display: flex;
+  }
+
+  .export-menu__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 7px 10px;
+    border-radius: calc(var(--radius-md) - 3px);
+    border: none;
+    background: none;
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    cursor: pointer;
+    text-align: left;
+    transition:
+      background var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+  }
+
+  .export-menu__item:hover {
+    background: var(--color-accent-dim);
+    color: var(--color-accent);
+  }
+
+  @media print {
+    .navbar { display: none; }
+  }
+</style>

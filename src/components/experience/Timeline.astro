@@ -1,0 +1,165 @@
+---
+import Tag from '../ui/Tag.astro';
+import { getCollection } from 'astro:content';
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const isRu = lang === 'ru';
+
+const entries = (await getCollection('experience')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+---
+
+<section class="section" id="experience" aria-labelledby="experience-title">
+  <div class="container">
+    <p class="section-label">{t('section.experience.label')}</p>
+    <h2 class="section-title" id="experience-title">{t('section.experience')}</h2>
+
+    <div class="timeline">
+      {entries.map((entry, i) => (
+        <article class="timeline__item">
+          <div class="timeline__connector" aria-hidden="true">
+            <div class="timeline__dot"></div>
+            {i < entries.length - 1 && <div class="timeline__line"></div>}
+          </div>
+
+          <div class="timeline__card">
+            <div class="timeline__header">
+              <div class="timeline__meta">
+                <span class="timeline__company">{entry.data.company}</span>
+                <span class="timeline__period">
+                  {entry.data.startDate} — {entry.data.current ? t('hero.current') : entry.data.endDate}
+                </span>
+              </div>
+              <p class="timeline__position">
+                {isRu ? entry.data.position : entry.data.positionEn}
+              </p>
+              <p class="timeline__industry">
+                {isRu ? entry.data.industryRu : entry.data.industry}
+              </p>
+            </div>
+
+            <p class="timeline__description">
+              {isRu ? entry.data.descriptionRu : entry.body}
+            </p>
+
+            <div class="timeline__stack">
+              {entry.data.technologies.map(tech => (
+                <Tag label={tech} />
+              ))}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+
+  .timeline__item {
+    display: grid;
+    grid-template-columns: 40px 1fr;
+    gap: var(--space-6);
+    position: relative;
+  }
+
+  .timeline__connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 6px;
+  }
+
+  .timeline__dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--color-accent);
+    background: var(--color-bg);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .timeline__item:first-child .timeline__dot {
+    background: var(--color-accent);
+    box-shadow: 0 0 12px var(--color-accent);
+  }
+
+  .timeline__line {
+    width: 1px;
+    flex: 1;
+    background: linear-gradient(to bottom, var(--color-accent), var(--color-border));
+    margin-block: var(--space-2);
+    min-height: 40px;
+  }
+
+  .timeline__card { padding-bottom: var(--space-12); }
+  .timeline__item:last-child .timeline__card { padding-bottom: 0; }
+  .timeline__header { margin-bottom: var(--space-4); }
+
+  .timeline__meta {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-bottom: var(--space-1);
+  }
+
+  .timeline__company {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .timeline__period {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+    letter-spacing: 0.05em;
+  }
+
+  .timeline__position {
+    font-size: var(--text-base);
+    font-weight: 500;
+    color: var(--color-text);
+    margin-bottom: var(--space-1);
+  }
+
+  .timeline__industry {
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .timeline__description {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    margin-bottom: var(--space-4);
+    max-width: 70ch;
+  }
+
+  .timeline__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  @media (max-width: 480px) {
+    .timeline__item {
+      grid-template-columns: 24px 1fr;
+      gap: var(--space-4);
+    }
+  }
+
+  @media print {
+    .timeline__card { padding-bottom: var(--space-8); break-inside: avoid; }
+  }
+</style>

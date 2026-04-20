@@ -1,0 +1,100 @@
+---
+import '../styles/global.css';
+import Navbar from '../components/nav/Navbar.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: string;
+}
+
+const {
+  title = 'Mark Gurianov — Team Lead',
+  description = 'Backend developer with 5+ years of experience. Java, Spring Boot, distributed systems. Saint Petersburg.',
+  lang = 'en',
+} = Astro.props;
+
+const siteUrl = 'https://mark1708.github.io';
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
+const isRu = lang === 'ru';
+
+const enPath = isRu
+  ? Astro.url.pathname.replace(/^\/ru(\/|$)/, '/') || '/'
+  : Astro.url.pathname;
+const enHref = siteUrl + enPath;
+const ruHref = isRu ? canonicalUrl : siteUrl + '/ru' + Astro.url.pathname;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Mark Gurianov',
+  jobTitle: 'Team Lead & Backend Engineer',
+  url: siteUrl,
+  image: `${siteUrl}/profile.jpg`,
+  email: 'mark1708.work@gmail.com',
+  sameAs: [
+    'https://github.com/Mark1708',
+    'https://www.linkedin.com/in/mark1708/',
+    'https://t.me/MarkStav',
+  ],
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+
+    <!-- Canonical & hreflang -->
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" hreflang="en" href={enHref} />
+    <link rel="alternate" hreflang="ru" href={ruHref} />
+    <link rel="alternate" hreflang="x-default" href={enHref} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:locale" content={isRu ? 'ru_RU' : 'en_US'} />
+    <meta property="og:locale:alternate" content={isRu ? 'en_US' : 'ru_RU'} />
+    <meta property="og:image" content={`${siteUrl}/profile.jpg`} />
+    <meta property="og:image:width" content="800" />
+    <meta property="og:image:height" content="800" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}/profile.jpg`} />
+
+    <!-- JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <!-- Anti-flash theme script -->
+    <script is:inline>
+      (function() {
+        var saved = localStorage.getItem('portfolio-theme') || 'system';
+        if (saved !== 'system') {
+          document.documentElement.setAttribute('data-theme', saved);
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <Navbar />
+    <div class="page-offset">
+      <slot />
+    </div>
+  </body>
+</html>
+
+<style>
+  .page-offset {
+    padding-top: 52px;
+  }
+</style>

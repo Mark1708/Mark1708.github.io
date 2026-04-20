@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "company": {
+      "type": "string"
+    },
+    "position": {
+      "type": "string"
+    },
+    "positionEn": {
+      "type": "string"
+    },
+    "startDate": {
+      "type": "string"
+    },
+    "endDate": {
+      "type": "string"
+    },
+    "current": {
+      "default": false,
+      "type": "boolean"
+    },
+    "industry": {
+      "type": "string"
+    },
+    "industryRu": {
+      "type": "string"
+    },
+    "technologies": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "order": {
+      "type": "number"
+    },
+    "descriptionRu": {
+      "type": "string"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "company",
+    "position",
+    "positionEn",
+    "startDate",
+    "industry",
+    "industryRu",
+    "technologies",
+    "order",
+    "descriptionRu"
+  ]
+}

@@ -1,0 +1,116 @@
+---
+import Tag from '../ui/Tag.astro';
+import { getCollection } from 'astro:content';
+import { useTranslations, type Lang } from '../../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const isRu = lang === 'ru';
+
+const projects = (await getCollection('projects')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+---
+
+<section class="section" id="projects" aria-labelledby="projects-title">
+  <div class="container">
+    <p class="section-label">{t('section.projects.label')}</p>
+    <h2 class="section-title" id="projects-title">{t('section.projects')}</h2>
+
+    <div class="projects-grid">
+      {projects.map(project => (
+        <article class="project-card">
+          <div class="project-card__header">
+            <h3 class="project-card__title">
+              {project.data.githubUrl
+                ? <a href={project.data.githubUrl} target="_blank" rel="noopener noreferrer">
+                    {project.data.title}
+                    <span class="project-card__arrow" aria-hidden="true">↗</span>
+                  </a>
+                : project.data.title
+              }
+            </h3>
+          </div>
+
+          <p class="project-card__description">
+            {isRu && project.data.descriptionRu ? project.data.descriptionRu : project.data.description}
+          </p>
+
+          <div class="project-card__footer">
+            <div class="project-card__tags">
+              {project.data.technologies.map(tech => (
+                <Tag label={tech} />
+              ))}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-6);
+  }
+
+  .project-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    transition:
+      border-color var(--duration-normal) var(--ease-out),
+      transform var(--duration-normal) var(--ease-out);
+  }
+
+  .project-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-4px);
+  }
+
+  .project-card__title {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 700;
+  }
+
+  .project-card__title a {
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .project-card__title a:hover {
+    color: var(--color-accent);
+    opacity: 1;
+  }
+
+  .project-card__arrow {
+    font-size: var(--text-lg);
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  .project-card:hover .project-card__arrow { transform: translate(2px, -2px); }
+
+  .project-card__description {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    flex: 1;
+  }
+
+  .project-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+</style>

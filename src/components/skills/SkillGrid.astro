@@ -1,0 +1,77 @@
+---
+import Tag from '../ui/Tag.astro';
+import { useTranslations, type Lang } from '../../i18n/ui';
+import skills from '../../data/skills.json';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<section class="section" id="skills" aria-labelledby="skills-title">
+  <div class="container">
+    <p class="section-label">{t('section.skills.label')}</p>
+    <h2 class="section-title" id="skills-title">{t('section.skills')}</h2>
+
+    <div class="bento">
+      {skills.categories.map((cat, i) => (
+        <div class={`bento__cell bento__cell--${i}`}>
+          <h3 class="bento__category">{cat.name}</h3>
+          <div class="bento__tags">
+            {cat.items.map(item => (
+              <Tag label={item} variant={i === 0 ? 'accent' : 'default'} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-4);
+  }
+
+  .bento__cell {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    transition: border-color var(--duration-normal) var(--ease-out);
+  }
+
+  .bento__cell:hover { border-color: oklch(from var(--color-border) calc(l + 0.1) c h); }
+
+  .bento__cell--0 {
+    grid-column: span 2;
+    background: var(--color-surface-2);
+  }
+
+  .bento__category {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: var(--space-4);
+  }
+
+  .bento__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  @media (max-width: 768px) {
+    .bento { grid-template-columns: 1fr 1fr; }
+    .bento__cell--0 { grid-column: span 2; }
+  }
+
+  @media (max-width: 480px) {
+    .bento { grid-template-columns: 1fr; }
+    .bento__cell--0 { grid-column: span 1; }
+  }
+</style>

@@ -1,0 +1,30 @@
+---
+interface Props {
+  label: string;
+  variant?: 'default' | 'accent';
+}
+const { label, variant = 'default' } = Astro.props;
+---
+
+<span class={`tag tag--${variant}`}>{label}</span>
+
+<style>
+  .tag {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    line-height: 1.6;
+  }
+
+  .tag--accent {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    background: var(--color-accent-dim);
+  }
+</style>
