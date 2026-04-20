@@ -8,6 +8,8 @@
   "email": "mark1708.work@gmail.com",
   "bio": "Backend developer with 5+ years of commercial experience. Designed and built high-load services, led full production cycles, managed teams of up to 10 engineers. Primary stack: Java & Spring Boot ecosystem. Currently growing toward Solution Architect.",
   "bioRu": "Backend-разработчик с 5+ годами коммерческого опыта. Проектировал и строил высоконагруженные сервисы, руководил полным циклом разработки, управлял командами до 10 человек. Основной стек: Java и экосистема Spring Boot. Развиваюсь в направлении Solution Architect.",
+  "location": "Stavropol, Russia",
+  "locationRu": "Ставрополь, Россия",
   "links": [
     { "label": "GitHub", "url": "https://github.com/Mark1708", "icon": "github" },
     { "label": "LinkedIn", "url": "https://www.linkedin.com/in/mark1708/", "icon": "linkedin" },
