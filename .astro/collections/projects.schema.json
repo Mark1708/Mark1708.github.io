@@ -28,6 +28,30 @@
     "order": {
       "type": "number"
     },
+    "stars": {
+      "type": "number"
+    },
+    "image": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "summaryRu": {
+      "type": "string"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "featuresRu": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "$schema": {
       "type": "string"
     }

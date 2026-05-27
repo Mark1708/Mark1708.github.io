@@ -4,7 +4,7 @@ import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 
 export default defineConfig({
-  site: 'https://mark1708.github.io',
+  site: 'https://mark1708.ru',
   integrations: [react(), sitemap()],
   i18n: {
     defaultLocale: 'en',

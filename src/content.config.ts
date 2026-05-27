@@ -28,6 +28,12 @@ const projects = defineCollection({
     githubUrl: z.string().url().optional(),
     featured: z.boolean().default(false),
     order: z.number(),
+    stars: z.number().optional(),
+    image: z.string().optional(),
+    summary: z.string().optional(),
+    summaryRu: z.string().optional(),
+    features: z.array(z.string()).optional(),
+    featuresRu: z.array(z.string()).optional(),
   }),
 });
 

@@ -1,0 +1,40 @@
+name: Sync project data from GitHub
+
+on:
+  workflow_dispatch:
+    inputs:
+      update_stars:
+        description: 'Update stars count from GitHub API'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Sync project metadata
+        run: node scripts/sync-projects.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          UPDATE_STARS: ${{ inputs.update_stars }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: 'chore: sync project data from GitHub'
+          commit-message: 'chore: sync project data'
+          branch: chore/sync-projects
+          delete-branch: true
+          labels: automation

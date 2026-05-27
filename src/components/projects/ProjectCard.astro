@@ -1,11 +1,13 @@
 ---
-import Tag from '../ui/Tag.astro';
+// biome-ignore-all lint/correctness/noUnusedImports: Astro templates reference frontmatter imports.
+// biome-ignore-all lint/correctness/noUnusedVariables: Astro templates reference frontmatter variables.
 import { getCollection } from 'astro:content';
-import { useTranslations, type Lang } from '../../i18n/ui';
+import { useTranslations as getTranslations, type Lang } from '../../i18n/ui';
+import Tag from '../ui/Tag.astro';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
-const t = useTranslations(lang);
+const t = getTranslations(lang);
 const isRu = lang === 'ru';
 
 const projects = (await getCollection('projects')).sort(
@@ -23,13 +25,20 @@ const projects = (await getCollection('projects')).sort(
         <article class="project-card">
           <div class="project-card__header">
             <h3 class="project-card__title">
-              {project.data.githubUrl
-                ? <a href={project.data.githubUrl} target="_blank" rel="noopener noreferrer">
-                    {project.data.title}
-                    <span class="project-card__arrow" aria-hidden="true">↗</span>
-                  </a>
-                : project.data.title
-              }
+              <a href={isRu ? `/ru/projects/${project.id}` : `/projects/${project.id}`}>
+                {project.data.title}
+              </a>
+              {project.data.githubUrl && (
+                <a
+                  href={project.data.githubUrl}
+                  class="project-card__ext"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`${project.data.title} on GitHub`}
+                >
+                  ↗
+                </a>
+              )}
             </h3>
           </div>
 
@@ -79,13 +88,13 @@ const projects = (await getCollection('projects')).sort(
     font-family: var(--font-display);
     font-size: var(--text-xl);
     font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
   }
 
   .project-card__title a {
     color: var(--color-text);
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
     transition: color var(--duration-fast) var(--ease-out);
   }
 
@@ -94,12 +103,21 @@ const projects = (await getCollection('projects')).sort(
     opacity: 1;
   }
 
-  .project-card__arrow {
+  .project-card__ext {
     font-size: var(--text-lg);
-    transition: transform var(--duration-fast) var(--ease-out);
+    line-height: 1;
+    color: var(--color-text-muted);
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      transform var(--duration-fast) var(--ease-out);
   }
 
-  .project-card:hover .project-card__arrow { transform: translate(2px, -2px); }
+  .project-card__ext:hover {
+    color: var(--color-accent);
+    opacity: 1;
+  }
+
+  .project-card:hover .project-card__ext { transform: translate(2px, -2px); }
 
   .project-card__description {
     color: var(--color-text-muted);

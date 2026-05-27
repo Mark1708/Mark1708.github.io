@@ -26,6 +26,13 @@ export const ui = {
     'footer.text': 'Mark Gurianov',
     'resume.title': 'Resume — Mark Gurianov',
     'resume.download': 'Download PDF',
+    'projects.title': 'Projects',
+    'projects.back': 'Back to projects',
+    'projects.github': 'View on GitHub',
+    'projects.stars': 'stars',
+    'projects.features': 'Key Features',
+    'projects.technologies': 'Technologies',
+    'projects.readMore': 'Read more',
   },
   ru: {
     'nav.export.pdf': 'PDF',
@@ -45,6 +52,13 @@ export const ui = {
     'footer.text': 'Марк Гурьянов',
     'resume.title': 'Резюме — Марк Гурьянов',
     'resume.download': 'Скачать PDF',
+    'projects.title': 'Проекты',
+    'projects.back': 'Назад к проектам',
+    'projects.github': 'Смотреть на GitHub',
+    'projects.stars': 'звёзд',
+    'projects.features': 'Ключевые возможности',
+    'projects.technologies': 'Технологии',
+    'projects.readMore': 'Подробнее',
   },
 } as const;
 

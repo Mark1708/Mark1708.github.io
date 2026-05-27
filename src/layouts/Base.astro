@@ -14,7 +14,7 @@ const {
   lang = 'en',
 } = Astro.props;
 
-const siteUrl = 'https://mark1708.github.io';
+const siteUrl = 'https://mark1708.ru';
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 const isRu = lang === 'ru';
 
@@ -67,7 +67,7 @@ const jsonLd = {
     <meta property="og:image:height" content="800" />
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={`${siteUrl}/profile.jpg`} />
