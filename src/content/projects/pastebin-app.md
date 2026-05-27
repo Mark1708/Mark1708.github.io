@@ -16,6 +16,8 @@ featuresRu:
   - "Реализует Spring Boot 3 REST API с React frontend"
   - "Использует Keycloak SSO и role-based access control для authentication flows"
   - "Запускает PostgreSQL, MinIO и приложения в локальном Docker Compose setup"
+status: "archived"
+startDate: "2024-09"
 ---
 
 A full-stack Pastebin demo built with a Spring Boot 3 REST API, React frontend, Keycloak SSO for authentication, MinIO for object storage, and PostgreSQL for persistence. The project focuses on architecture and integration points in a local Docker Compose setup rather than production hardening.

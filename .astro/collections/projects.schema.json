@@ -52,6 +52,24 @@
         "type": "string"
       }
     },
+    "status": {
+      "default": "active",
+      "type": "string",
+      "enum": [
+        "active",
+        "archived",
+        "wip"
+      ]
+    },
+    "startDate": {
+      "type": "string"
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "$schema": {
       "type": "string"
     }

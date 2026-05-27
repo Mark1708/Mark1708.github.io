@@ -16,6 +16,8 @@ featuresRu:
   - "Группирует OhMyOpenAgent агентов по состояниям lifecycle: active, idle и stopped"
   - "Добавляет сворачиваемые секции сайдбара с model metadata и aliases"
   - "Интегрируется с системой тем OpenCode для нативного TUI-стиля"
+status: "active"
+startDate: "2026-05"
 ---
 
 A sidebar plugin for the OpenCode TUI that provides a management interface for OhMyOpenAgent agents. Organizes agents into lifecycle-based categories (active, idle, stopped) with collapsible sections. Displays model information, supports aliases, and integrates with the OpenCode theme system.

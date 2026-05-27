@@ -16,6 +16,8 @@ featuresRu:
   - "Бенчмаркает PostgreSQL-backed queue processing в Spring Boot приложениях"
   - "Сравнивает варианты схем, размеры батчей и стратегии индексирования под нагрузкой"
   - "Измеряет throughput и latency для оценки trade-offs БД-очередей"
+status: "archived"
+startDate: "2024-10"
 ---
 
 A performance benchmark for PostgreSQL-backed queue processing in Spring Boot applications. The experiment compares schema variants, batch sizes, and indexing choices by throughput and latency to understand when a database-backed queue is a practical option.

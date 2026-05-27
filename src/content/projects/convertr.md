@@ -16,6 +16,8 @@ featuresRu:
   - "Направляет конвертации в локальные инструменты: Pandoc, FFmpeg, LibreOffice, ImageMagick, jq и yq"
   - "Поддерживает документы, изображения, аудио, видео и data formats из одного CLI"
   - "Поставляется как Go/Cobra CLI с автоматизированными релизами через GoReleaser"
+status: "active"
+startDate: "2026-05"
 ---
 
 A Go-based CLI tool that routes between file formats using the best available local backend.

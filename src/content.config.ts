@@ -34,6 +34,9 @@ const projects = defineCollection({
     summaryRu: z.string().optional(),
     features: z.array(z.string()).optional(),
     featuresRu: z.array(z.string()).optional(),
+    status: z.enum(['active', 'archived', 'wip']).default('active'),
+    startDate: z.string().optional(),
+    images: z.array(z.string()).optional(),
   }),
 });
 

@@ -1,17 +1,21 @@
 ---
-import { getLangFromUrl, getRouteForLang, useTranslations, languages, type Lang } from '../../i18n/ui';
+// biome-ignore-all lint/correctness/noUnusedImports: Astro templates reference frontmatter imports.
+// biome-ignore-all lint/correctness/noUnusedVariables: Astro templates reference frontmatter variables.
+import { getLangFromUrl, getRouteForLang, useTranslations as getTranslations } from '../../i18n/ui';
 
 const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
+const t = getTranslations(lang);
 
 const enUrl = getRouteForLang(Astro.url, 'en');
 const ruUrl = getRouteForLang(Astro.url, 'ru');
 const resumeUrl = lang === 'ru' ? '/ru/resume' : '/resume';
+const projectsUrl = lang === 'ru' ? '/ru/projects' : '/projects';
 ---
 
 <header class="navbar" role="banner">
   <nav class="navbar__inner container" aria-label="Site navigation">
     <a href={lang === 'ru' ? '/ru' : '/'} class="navbar__logo" aria-label="Home">MG</a>
+    <a href={projectsUrl} class="navbar__link">{t('nav.projects')}</a>
 
     <div class="navbar__controls">
 
@@ -180,6 +184,19 @@ const resumeUrl = lang === 'ru' ? '/ru/resume' : '/resume';
     letter-spacing: -0.02em;
   }
   .navbar__logo:hover { opacity: 0.8; }
+
+  .navbar__link {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .navbar__link:hover {
+    color: var(--color-accent);
+  }
 
   .navbar__controls {
     display: flex;

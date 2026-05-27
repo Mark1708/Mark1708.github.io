@@ -33,6 +33,18 @@ export const ui = {
     'projects.features': 'Key Features',
     'projects.technologies': 'Technologies',
     'projects.readMore': 'Read more',
+    'nav.projects': 'Projects',
+    'project.status.active': 'Active',
+    'project.status.archived': 'Archived',
+    'project.status.wip': 'Work in progress',
+    'project.backToList': 'Back to projects',
+    'project.viewGithub': 'View on GitHub',
+    'project.liveDemo': 'Live Demo',
+    'project.features': 'Key features',
+    'project.since': 'Since',
+    'project.lastUpdated': 'Last updated',
+    'page.projects.title': 'Projects - Mark Gurianov',
+    'page.projects.description': 'Open-source projects and pet projects by Mark Gurianov. Backend, DevTools, ML experiments.',
   },
   ru: {
     'nav.export.pdf': 'PDF',
@@ -59,6 +71,18 @@ export const ui = {
     'projects.features': 'Ключевые возможности',
     'projects.technologies': 'Технологии',
     'projects.readMore': 'Подробнее',
+    'nav.projects': 'Проекты',
+    'project.status.active': 'Активный',
+    'project.status.archived': 'Архив',
+    'project.status.wip': 'В разработке',
+    'project.backToList': 'Назад к проектам',
+    'project.viewGithub': 'Смотреть на GitHub',
+    'project.liveDemo': 'Демо',
+    'project.features': 'Ключевые возможности',
+    'project.since': 'С',
+    'project.lastUpdated': 'Обновлено',
+    'page.projects.title': 'Проекты — Марк Гурьянов',
+    'page.projects.description': 'Open-source проекты и pet projects Марка Гурьянова. Backend, DevTools, ML эксперименты.',
   },
 } as const;
 
@@ -77,7 +101,7 @@ export function getLangFromUrl(url: URL): Lang {
 export function getRouteForLang(url: URL, targetLang: Lang): string {
   const [, maybeLang, ...rest] = url.pathname.split('/');
   if (maybeLang in languages) {
-    if (targetLang === defaultLang) return '/' + rest.join('/');
+    if (targetLang === defaultLang) return `/${rest.join('/')}`;
     return `/${targetLang}/${rest.join('/')}`;
   }
   if (targetLang === defaultLang) return url.pathname;

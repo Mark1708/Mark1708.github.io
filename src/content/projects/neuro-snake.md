@@ -16,6 +16,8 @@ featuresRu:
   - "Считывает EEG-активность с Arduino hardware через serial communication"
   - "Обрабатывает сигналы на Python и маппит активность на pygame-управление Snake"
   - "Генерирует PDF-отчет об активности после каждого экспериментального запуска"
+status: "archived"
+startDate: "2023-05"
 ---
 
 An educational hardware/software experiment that connects an Arduino Uno and EEG unit to a Python Snake game. The project captures brain-activity signals over serial communication, applies signal processing, maps the result to game controls, and produces a PDF report after each run.

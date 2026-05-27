@@ -16,6 +16,8 @@ featuresRu:
   - "Отслеживает ежедневные расходы OpenAI, токены и запросы прямо в TUI"
   - "Показывает квоты Z.AI и GLM с двухуровневым переключателем детализации"
   - "Помечает устаревшие данные провайдеров и скрывает секреты для безопасного отображения"
+status: "active"
+startDate: "2026-05"
 ---
 
 A sidebar plugin for the OpenCode TUI that monitors API usage across multiple providers. Tracks OpenAI daily cost, token consumption, and request counts. Displays Z.AI and GLM quota status with a two-level detail toggle and stale-data indicators. Features secret redaction for safe display.
