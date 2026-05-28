@@ -2,6 +2,10 @@
 title: "neuro-snake"
 description: "Brain-controlled Snake game using Arduino EEG hardware and Python. Demonstrates a playful BCI experiment with real-time signal processing, pygame controls, and generated activity reports."
 descriptionRu: "Игра Snake, управляемая активностью мозга через Arduino EEG hardware и Python. Показывает игровой BCI experiment с real-time signal processing, pygame controls и generated activity reports."
+bodyRu: |
+  Учебный hardware/software эксперимент, который подключает Arduino Uno и EEG-модуль к игре Snake на Python. Проект считывает сигналы активности мозга через serial communication и обрабатывает их в реальном времени.
+
+  После обработки сигнал сопоставляется с управлением Snake в pygame, а по завершении каждого экспериментального запуска формируется PDF-отчет об активности. Это игровой BCI-прототип для демонстрации связки Arduino, EEG и Python.
 technologies: ["Python", "pygame", "Arduino", "EEG", "pySerial", "NumPy", "SciPy"]
 githubUrl: "https://github.com/Mark1708/neuro-snake"
 featured: true

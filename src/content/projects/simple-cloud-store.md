@@ -2,6 +2,12 @@
 title: "simple-cloud-store"
 description: "Full-stack cloud store sandbox with a React/Vite storefront and Java microservices behind a Vert.x gateway. The project compares Spring Boot, Quarkus, Vert.x, and React service styles in one store flow."
 descriptionRu: "Full-stack sandbox интернет-магазина с React/Vite витриной и Java-микросервисами за Vert.x gateway. Проект сравнивает Spring Boot, Quarkus, Vert.x и React в едином сценарии магазина."
+bodyRu: |
+  Full-stack sandbox интернет-магазина с публичной витриной на React, Vite и TypeScript, а также тремя Java-микросервисами за Vert.x gateway.
+
+  Это портфолио-демо для сравнения Spring Boot, Quarkus, Vert.x и React в одном пользовательском сценарии магазина. Текущий frontend находится в `web-react`, а backend-стек включает Catalog API, Inventory API, Gateway API/static edge и PostgreSQL.
+
+  Gateway объединяет вызовы catalog и inventory для `/api/products`. Web service служит текущей публичной витриной и построен на React, Vite, TypeScript, PatternFly и Express.
 technologies: ["Java", "Spring Boot", "Quarkus", "Vert.x", "React", "Vite", "PostgreSQL", "Docker"]
 githubUrl: "https://github.com/Mark1708/simple-cloud-store"
 featured: false

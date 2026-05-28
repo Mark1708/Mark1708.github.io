@@ -21,6 +21,9 @@ const { technologies, githubUrl, stars } = project.data;
 
 const pageTitle = `${title} — Mark Gurianov`;
 const pageDescription = summary || description;
+const bodyRuParagraphs = lang === 'ru' && project.data.bodyRu
+  ? project.data.bodyRu.split('\n\n').map(paragraph => paragraph.trim()).filter(Boolean)
+  : [];
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -79,7 +82,15 @@ const jsonLd = {
       </div>
     </section>
 
-    <div class="project-detail__body" set:html={project.body} />
+    {bodyRuParagraphs.length > 0 ? (
+      <div class="project-detail__body">
+        {bodyRuParagraphs.map(paragraph => (
+          <p>{paragraph}</p>
+        ))}
+      </div>
+    ) : (
+      <div class="project-detail__body" set:html={project.body} />
+    )}
   </section>
 
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

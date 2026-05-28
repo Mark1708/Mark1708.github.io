@@ -2,6 +2,10 @@
 title: "spring-yoomoney-db-queue"
 description: "PostgreSQL-backed queue performance benchmark for Spring Boot services. Compares schema variants, batching, and indexing choices to evaluate database-backed queue throughput under load."
 descriptionRu: "Бенчмарк производительности PostgreSQL-backed очередей для Spring Boot. Сравнивает варианты схем, batching и indexing choices, чтобы оценить throughput БД-очереди под нагрузкой."
+bodyRu: |
+  Бенчмарк производительности очередей на базе PostgreSQL для Spring Boot приложений. Эксперимент сравнивает варианты схем, размеры батчей и настройки индексов по throughput и latency.
+
+  Цель проекта в том, чтобы понять, когда database-backed queue остается практичным вариантом под нагрузкой и какие компромиссы возникают при выборе структуры таблиц, батчинга и стратегии индексирования.
 technologies: ["Java", "Spring Boot", "PostgreSQL", "Docker", "db-queue"]
 githubUrl: "https://github.com/Mark1708/spring-yoomoney-db-queue"
 featured: true

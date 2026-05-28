@@ -11,6 +11,9 @@
     "descriptionRu": {
       "type": "string"
     },
+    "bodyRu": {
+      "type": "string"
+    },
     "technologies": {
       "type": "array",
       "items": {
@@ -38,6 +41,12 @@
       "type": "string"
     },
     "summaryRu": {
+      "type": "string"
+    },
+    "demonstrates": {
+      "type": "string"
+    },
+    "demonstratesRu": {
       "type": "string"
     },
     "features": {

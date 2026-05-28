@@ -2,12 +2,18 @@
 title: "convertr"
 description: "Universal CLI file format converter supporting 50+ conversions across documents, images, audio, video, and data formats. Powered by pluggable backends: Pandoc, LibreOffice, FFmpeg, ImageMagick, jq, yq, and more."
 descriptionRu: "Универсальный CLI-конвертер форматов с поддержкой 50+ преобразований — документы, изображения, аудио, видео, данные. Построен на подключаемых бэкендах: Pandoc, LibreOffice, FFmpeg, ImageMagick, jq, yq и другие."
+bodyRu: |
+  CLI-утилита на Go для конвертации файлов между форматами через лучший доступный локальный backend.
+
+  Convertr выступает единым входом для рабочих процессов с документами, изображениями, аудио, видео и data formats. Конкретные преобразования передаются специализированным инструментам вроде Pandoc, FFmpeg, LibreOffice, ImageMagick, jq и yq, поэтому проект остается расширяемым и не пытается заново реализовать уже зрелые конвертеры.
 technologies: ["Go", "Cobra", "GitHub Actions", "GoReleaser"]
 githubUrl: "https://github.com/Mark1708/convertr"
 featured: true
 order: 1
 summary: "Go CLI converter for 50+ file format workflows"
 summaryRu: "Go CLI-конвертер для 50+ файловых форматов"
+demonstrates: "CLI architecture, format routing, GoReleaser"
+demonstratesRu: "Архитектура CLI, маршрутизация форматов, GoReleaser"
 features:
   - "Routes conversions to local tools such as Pandoc, FFmpeg, LibreOffice, ImageMagick, jq, and yq"
   - "Supports document, image, audio, video, and data format pipelines from one CLI"

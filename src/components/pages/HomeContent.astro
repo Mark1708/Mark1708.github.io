@@ -7,7 +7,9 @@ import { useTranslations as getTranslations } from '../../i18n/ui';
 import Base from '../../layouts/Base.astro';
 import Timeline from '../experience/Timeline.astro';
 import HeroSection from '../hero/HeroSection.astro';
+import FeaturedProjects from '../projects/FeaturedProjects.astro';
 import ProjectCard from '../projects/ProjectCard.astro';
+import ArticlesSection from '../sections/ArticlesSection.astro';
 import SkillGrid from '../skills/SkillGrid.astro';
 
 interface Props {
@@ -28,6 +30,8 @@ const footerName = t('footer.text') || (lang === 'ru' ? social.name : social.nam
     <HeroSection lang={lang} />
     <Timeline lang={lang} />
     <SkillGrid lang={lang} />
+    <FeaturedProjects lang={lang} />
+    <ArticlesSection lang={lang} />
     <ProjectCard lang={lang} />
 
     <footer class="footer">

@@ -2,6 +2,10 @@
 title: "pastebin-app"
 description: "Full-stack Pastebin demo with Spring Boot 3, React, Keycloak SSO, MinIO object storage, and Docker Compose. Shows REST API design, containerized infrastructure, and role-based access control in a sandbox setup."
 descriptionRu: "Full-stack Pastebin demo на Spring Boot 3, React, Keycloak SSO, MinIO и Docker Compose. Показывает REST API design, контейнеризированную инфраструктуру и ролевой доступ в sandbox setup."
+bodyRu: |
+  Full-stack демо Pastebin на Spring Boot 3 REST API и React frontend. Для аутентификации используется Keycloak SSO, для объектного хранилища MinIO, а PostgreSQL отвечает за постоянное хранение данных.
+
+  Проект сосредоточен на архитектуре и интеграционных точках в локальном Docker Compose окружении. Это sandbox для демонстрации REST API design, контейнеризированной инфраструктуры и role-based access control, а не production-hardened система.
 technologies: ["Java", "Spring Boot", "React", "Keycloak", "Docker", "PostgreSQL", "MinIO"]
 githubUrl: "https://github.com/Mark1708/pastebin-app"
 featured: true

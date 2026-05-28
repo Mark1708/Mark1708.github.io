@@ -2,12 +2,18 @@
 title: "opencode-usage-monitor"
 description: "OpenCode TUI sidebar plugin for API usage monitoring. Tracks OpenAI daily cost, tokens, and requests. Shows Z.AI and GLM quota status with two-level toggle and stale-data indicators."
 descriptionRu: "TUI-сайдбар плагин для OpenCode — мониторинг использования API. Отслеживает ежедневные расходы OpenAI, токены и запросы. Показывает статус квот Z.AI и GLM с двухуровневым переключателем и индикаторами устаревания данных."
+bodyRu: |
+  Плагин боковой панели для OpenCode TUI, который отслеживает использование API у нескольких провайдеров. Он показывает ежедневные расходы OpenAI, потребление токенов и количество запросов прямо внутри TUI.
+
+  Для Z.AI и GLM отображается состояние квот с двухуровневым переключателем детализации и индикаторами устаревших данных. Секреты маскируются перед выводом, поэтому информацию можно безопасно показывать в интерфейсе.
 technologies: ["TypeScript", "Bun", "OpenCode Plugin API"]
 githubUrl: "https://github.com/Mark1708/opencode-usage-monitor"
 featured: true
 order: 4
 summary: "OpenCode sidebar for API cost and quota tracking"
 summaryRu: "Сайдбар OpenCode для отслеживания API-расходов"
+demonstrates: "API monitoring, quota management, secret redaction"
+demonstratesRu: "Мониторинг API, управление квотами, редакция секретов"
 features:
   - "Tracks OpenAI daily cost, token consumption, and request counts inside the TUI"
   - "Shows Z.AI and GLM quota status with a two-level detail toggle"

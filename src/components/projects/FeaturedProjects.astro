@@ -1,0 +1,127 @@
+---
+// biome-ignore-all lint/correctness/noUnusedImports: Astro templates reference frontmatter imports.
+// biome-ignore-all lint/correctness/noUnusedVariables: Astro templates reference frontmatter variables.
+import { getCollection } from 'astro:content';
+import { type Lang, useTranslations } from '../../i18n/ui';
+
+interface Props { lang: Lang }
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const isRu = lang === 'ru';
+
+const featuredProjects = (await getCollection('projects'))
+  .filter(project => project.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<section class="section" id="featured-projects" aria-labelledby="featured-projects-title">
+  <div class="container">
+    <p class="section-label">{t('section.featuredProjects.label')}</p>
+    <h2 class="section-title" id="featured-projects-title">{t('section.featuredProjects')}</h2>
+
+    <div class="featured-grid">
+      {featuredProjects.map(project => (
+        <article class="featured-card">
+          <div class="featured-card__header">
+            <h3 class="featured-card__title">
+              <a href={isRu ? `/ru/projects/${project.id}` : `/projects/${project.id}`}>
+                {project.data.title}
+              </a>
+            </h3>
+          </div>
+
+          <p class="featured-card__summary">
+            {isRu && project.data.summaryRu ? project.data.summaryRu : project.data.summary ?? project.data.description}
+          </p>
+
+          <p class="featured-card__demonstrates">
+            <span>{t('featuredProjects.demonstrates')}</span>
+            {isRu && project.data.demonstratesRu ? project.data.demonstratesRu : project.data.demonstrates}
+          </p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .featured-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-4);
+  }
+
+  .featured-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    transition:
+      border-color var(--duration-normal) var(--ease-out),
+      transform var(--duration-normal) var(--ease-out);
+  }
+
+  .featured-card:first-child {
+    background: var(--color-surface-2);
+    grid-column: span 2;
+  }
+
+  .featured-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-4px);
+  }
+
+  .featured-card__title {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 700;
+  }
+
+  .featured-card__title a {
+    color: var(--color-text);
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .featured-card__title a:hover {
+    color: var(--color-accent);
+    opacity: 1;
+  }
+
+  .featured-card__summary {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+    line-height: 1.7;
+    flex: 1;
+  }
+
+  .featured-card__demonstrates {
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text);
+    font-size: var(--text-sm);
+    line-height: 1.6;
+    padding-top: var(--space-4);
+  }
+
+  .featured-card__demonstrates span {
+    color: var(--color-accent);
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.1em;
+    margin-bottom: var(--space-2);
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 960px) {
+    .featured-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .featured-grid { grid-template-columns: 1fr; }
+    .featured-card:first-child { grid-column: span 1; }
+  }
+</style>

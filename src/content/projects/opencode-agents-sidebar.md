@@ -2,6 +2,10 @@
 title: "opencode-agents-sidebar"
 description: "OpenCode TUI sidebar plugin for managing OhMyOpenAgent agents. Lifecycle-based categories, collapsible sections, model info, aliases support, and theme integration."
 descriptionRu: "TUI-сайдбар плагин для OpenCode — управление агентами OhMyOpenAgent. Категории по жизненному циклу, сворачиваемые секции, информация о моделях, поддержка алиасов и интеграция с темами."
+bodyRu: |
+  Плагин боковой панели для OpenCode TUI, который добавляет интерфейс управления агентами OhMyOpenAgent. Агенты сгруппированы по состояниям жизненного цикла: active, idle и stopped.
+
+  Сайдбар поддерживает сворачиваемые секции, показывает информацию о моделях, работает с алиасами и интегрируется с системой тем OpenCode, чтобы выглядеть как нативная часть TUI.
 technologies: ["TypeScript", "Bun", "SolidJS", "OpenCode Plugin API"]
 githubUrl: "https://github.com/Mark1708/opencode-agents-sidebar"
 featured: true

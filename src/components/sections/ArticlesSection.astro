@@ -1,0 +1,87 @@
+---
+// biome-ignore-all lint/correctness/noUnusedImports: Astro templates reference frontmatter imports.
+// biome-ignore-all lint/correctness/noUnusedVariables: Astro templates reference frontmatter variables.
+import { type Lang, useTranslations } from '../../i18n/ui';
+
+interface Props { lang: Lang }
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const articles = [
+  t('articles.item.hse'),
+  t('articles.item.habr'),
+];
+---
+
+<section class="section" id="articles" aria-labelledby="articles-title">
+  <div class="container">
+    <div class="articles-heading">
+      <div>
+        <p class="section-label">{t('section.articles.label')}</p>
+        <h2 class="section-title" id="articles-title">{t('section.articles')}</h2>
+      </div>
+      <p class="articles-badge">{t('articles.badge')}</p>
+    </div>
+
+    <div class="articles-grid">
+      {articles.map(article => (
+        <article class="articles-card">
+          <p>{article}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .articles-heading {
+    align-items: start;
+    display: flex;
+    gap: var(--space-4);
+    justify-content: space-between;
+  }
+
+  .articles-badge {
+    background: var(--color-accent-dim);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    letter-spacing: 0.08em;
+    padding: var(--space-2) var(--space-3);
+    text-transform: uppercase;
+  }
+
+  .articles-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  .articles-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    transition: border-color var(--duration-normal) var(--ease-out);
+  }
+
+  .articles-card:first-child {
+    background: var(--color-surface-2);
+  }
+
+  .articles-card:hover { border-color: oklch(from var(--color-border) calc(l + 0.1) c h); }
+
+  .articles-card p {
+    color: var(--color-text);
+    font-size: var(--text-base);
+    line-height: 1.7;
+  }
+
+  @media (max-width: 768px) {
+    .articles-heading { flex-direction: column; }
+    .articles-grid { grid-template-columns: 1fr; }
+  }
+</style>
