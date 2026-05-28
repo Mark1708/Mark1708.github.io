@@ -1,5 +1,7 @@
 # Mark Gurianov — Portfolio & Resume
 
+[Русская версия](./README.ru.md)
+
 > Bilingual Astro portfolio and resume site for presenting backend engineering experience, skills, and selected projects.
 
 ![Astro](https://img.shields.io/badge/framework-Astro%206-111827?style=for-the-badge&labelColor=111827&color=5b5ef4)
