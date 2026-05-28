@@ -375,17 +375,17 @@ const jsonLd = {
       border-radius: var(--radius-lg);
       display: block;
       height: auto;
-      max-height: min(70vh, 720px);
+      margin-inline: auto;
+      max-height: 480px;
       max-width: 100%;
       object-fit: contain;
-      width: auto;
+      width: min(100%, 640px);
     }
 
     .article-detail__body :global(p:has(> img:only-child)) {
-      align-items: center;
-      display: flex;
-      justify-content: center;
+      display: block;
       margin: var(--space-6) 0;
+      text-align: center;
     }
 
     .article-detail__body :global(figcaption),
@@ -552,12 +552,24 @@ const jsonLd = {
       }
 
       .article-detail__body :global(img) {
-        max-height: 60vh;
-        width: 100%;
+        max-height: 420px;
+        width: min(100%, 560px);
       }
 
       .article-detail__body :global(p:has(> img:only-child)) {
         margin: var(--space-5) 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .article-detail__body :global(img) {
+        border-radius: var(--radius-md);
+        max-height: 320px;
+        width: min(100%, 360px);
+      }
+
+      .article-detail__body :global(p:has(> img:only-child)) {
+        margin: var(--space-4) 0;
       }
     }
   </style>
