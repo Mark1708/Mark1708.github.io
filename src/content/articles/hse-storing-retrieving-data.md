@@ -9,6 +9,15 @@ sourceName: "HSE University"
 sourceNameRu: "ВШЭ"
 tags: ["Data Architecture", "Databases", "Data Engineering", "OLAP", "NoSQL"]
 readingTime: "45 min"
+files:
+  - url: /files/hse-storing-retrieving-data.pdf
+    label: "Presentation (PDF, 1.7 MB)"
+    labelRu: "Презентация (PDF, 1.7 МБ)"
+    format: PDF
+  - url: /files/hse-storing-retrieving-data.pptx
+    label: "Presentation (PPTX, 12 MB)"
+    labelRu: "Презентация (PPTX, 12 МБ)"
+    format: PPTX
 bodyEn: |
   ## Overview
 

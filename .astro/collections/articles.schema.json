@@ -42,6 +42,32 @@
     "bodyEn": {
       "type": "string"
     },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "labelRu": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "label",
+          "labelRu",
+          "format"
+        ]
+      }
+    },
     "$schema": {
       "type": "string"
     }

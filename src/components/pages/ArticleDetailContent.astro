@@ -153,6 +153,20 @@ const jsonLd = {
         ))}
       </div>
     )}
+
+    {article.data.files && article.data.files.length > 0 && (
+      <div class="article-detail__downloads">
+        <h2 class="article-detail__downloads-title">{t('article.downloadPresentation')}</h2>
+        <div class="article-detail__downloads-list">
+          {article.data.files.map(file => (
+            <a href={file.url} download class="article-detail__download-link">
+              <span class="article-detail__download-label">{lang === 'ru' ? file.labelRu : file.label}</span>
+              <span class="article-detail__download-format">{file.format}</span>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
   </article>
 
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
@@ -317,6 +331,61 @@ const jsonLd = {
       line-height: 1.7;
       padding: 0;
       white-space: pre;
+    }
+
+    .article-detail__downloads {
+      margin-top: var(--space-10);
+      padding-top: var(--space-8);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .article-detail__downloads-title {
+      color: var(--color-text);
+      font-family: var(--font-display);
+      font-size: var(--text-xl);
+      font-weight: 700;
+      margin-bottom: var(--space-4);
+    }
+
+    .article-detail__downloads-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+    }
+
+    .article-detail__download-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-3) var(--space-5);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      color: var(--color-text);
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      font-weight: 500;
+      text-decoration: none;
+      transition:
+        border-color var(--duration-fast) var(--ease-out),
+        color var(--duration-fast) var(--ease-out);
+    }
+
+    .article-detail__download-link:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+      opacity: 1;
+    }
+
+    .article-detail__download-format {
+      padding: 0.1em 0.4em;
+      background: var(--color-surface-2);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-muted);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      text-transform: uppercase;
     }
   </style>
 </Base>

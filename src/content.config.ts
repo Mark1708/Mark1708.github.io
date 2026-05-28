@@ -58,6 +58,12 @@ const articles = defineCollection({
     readingTime: z.string(),
     readers: z.string().optional(),
     bodyEn: z.string(),
+    files: z.array(z.object({
+      url: z.string(),
+      label: z.string(),
+      labelRu: z.string(),
+      format: z.string(),
+    })).optional(),
   }),
 });
 
