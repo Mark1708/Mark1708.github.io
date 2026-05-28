@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "titleEn": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "descriptionEn": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string"
+    },
+    "sourceUrl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "sourceName": {
+      "type": "string"
+    },
+    "sourceNameRu": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "readingTime": {
+      "type": "string"
+    },
+    "readers": {
+      "type": "string"
+    },
+    "bodyEn": {
+      "type": "string"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "titleEn",
+    "description",
+    "descriptionEn",
+    "date",
+    "sourceUrl",
+    "sourceName",
+    "sourceNameRu",
+    "tags",
+    "readingTime",
+    "bodyEn"
+  ]
+}
