@@ -18,6 +18,7 @@ featuresRu:
   - "Генерирует PDF-отчет об активности после каждого экспериментального запуска"
 status: "archived"
 startDate: "2023-05"
+image: "/images/projects/neuro-snake/preview.gif"
 ---
 
 An educational hardware/software experiment that connects an Arduino Uno and EEG unit to a Python Snake game. The project captures brain-activity signals over serial communication, applies signal processing, maps the result to game controls, and produces a PDF report after each run.

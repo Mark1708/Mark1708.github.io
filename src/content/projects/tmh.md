@@ -18,6 +18,7 @@ featuresRu:
   - "Обнаруживает drift и поддерживает dotfile sync, freeze/import/export workflows"
 status: "active"
 startDate: "2026-05"
+image: "/images/projects/tmh/preview.gif"
 ---
 
 Declarative tmux session management powered by YAML configuration files. Features a TUI dashboard with fuzzy session picker, drift detection between declared and running sessions, dotfile sync, and freeze/import/export workflows. Built as a single static binary with GoReleaser.

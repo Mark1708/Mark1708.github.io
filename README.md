@@ -3,7 +3,6 @@
 > Bilingual Astro portfolio and resume site for presenting backend engineering experience, skills, and selected projects.
 
 ![Astro](https://img.shields.io/badge/framework-Astro%206-111827?style=for-the-badge&labelColor=111827&color=5b5ef4)
-![React](https://img.shields.io/badge/ui-React%2019-111827?style=for-the-badge&labelColor=111827&color=5b5ef4)
 ![Deploy](https://img.shields.io/badge/deploy-GitHub%20Pages-111827?style=for-the-badge&labelColor=111827&color=5b5ef4)
 ![License](https://img.shields.io/badge/license-GPL--3.0-111827?style=for-the-badge&labelColor=111827&color=5b5ef4)
 
@@ -11,8 +10,8 @@
 |---|---|
 | Status | Active portfolio site |
 | Type | Static frontend site / resume |
-| Primary stack | Astro 6, React 19 integration, TypeScript, CSS, Markdown content collections |
-| Live preview | <https://mark1708.github.io> |
+| Primary stack | Astro 6, TypeScript, CSS, Markdown content collections |
+| Live preview | <https://mark1708.ru> |
 | Quick verify | `npm ci && npm run build` |
 | Verification level | Execution-verified for build; manifest-verified for scripts and deployment |
 
@@ -27,7 +26,6 @@
 | Layer | Tool | Source |
 |---|---|---|
 | Framework | Astro `^6.1.8` | `package.json`, `astro.config.mjs` |
-| UI integration | React `^19.2.5`, `@astrojs/react` `^5.0.3` | `package.json`, `astro.config.mjs` |
 | Language / config | TypeScript with Astro strict config | `tsconfig.json` |
 | Styling | Global CSS and design tokens | `src/styles/global.css`, `src/styles/tokens.css` |
 | Content | Astro content collections, Markdown, JSON | `src/content.config.ts`, `src/content/`, `src/data/` |
@@ -91,10 +89,10 @@ Node.js `>=22.12.0` is declared in `package.json`.
 
 ## Deployment
 
-- Hosting target: GitHub Pages at <https://mark1708.github.io>.
+- Hosting target: GitHub Pages at <https://mark1708.ru>.
 - Workflow: `.github/workflows/deploy.yml` runs on pushes to `master` and manual dispatch.
 - Build pipeline: `npm ci`, `npm run build`, upload `dist/`, then `actions/deploy-pages@v4`.
-- Astro site URL is configured as `https://mark1708.github.io` in `astro.config.mjs`.
+- Astro site URL is configured as `https://mark1708.ru` in `astro.config.mjs`.
 
 ## Limitations / Security
 
@@ -108,6 +106,6 @@ Active personal portfolio repository. The supported local quality gate is the As
 
 ## Links / License
 
-- Live preview: <https://mark1708.github.io>
+- Live preview: <https://mark1708.ru>
 - GitHub profile: <https://github.com/Mark1708>
 - License: GPL-3.0, see [`LICENSE`](LICENSE)

@@ -18,6 +18,7 @@ featuresRu:
   - "Документирует before/after примеры и ограничения model-based restoration"
 status: "archived"
 startDate: "2023-08"
+image: "/images/projects/beautify-old-photo/preview.jpg"
 ---
 
 A research notebook that combines GFPGAN face enhancement with DeOldify automatic colorization. It demonstrates how aged or damaged photos can be restored in a reproducible Colab/Jupyter workflow and documents the expected limitations of model-based restoration.

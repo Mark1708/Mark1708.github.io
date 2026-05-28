@@ -18,6 +18,7 @@ featuresRu:
   - "Поставляется как Go/Cobra CLI с автоматизированными релизами через GoReleaser"
 status: "active"
 startDate: "2026-05"
+image: "/images/projects/convertr/preview.png"
 ---
 
 A Go-based CLI tool that routes between file formats using the best available local backend.

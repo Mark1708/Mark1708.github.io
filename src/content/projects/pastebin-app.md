@@ -18,6 +18,7 @@ featuresRu:
   - "Запускает PostgreSQL, MinIO и приложения в локальном Docker Compose setup"
 status: "archived"
 startDate: "2024-09"
+image: "/images/projects/pastebin-app/preview.png"
 ---
 
 A full-stack Pastebin demo built with a Spring Boot 3 REST API, React frontend, Keycloak SSO for authentication, MinIO for object storage, and PostgreSQL for persistence. The project focuses on architecture and integration points in a local Docker Compose setup rather than production hardening.

@@ -18,6 +18,7 @@ featuresRu:
   - "Измеряет throughput и latency для оценки trade-offs БД-очередей"
 status: "archived"
 startDate: "2024-10"
+image: "/images/projects/spring-yoomoney-db-queue/preview.png"
 ---
 
 A performance benchmark for PostgreSQL-backed queue processing in Spring Boot applications. The experiment compares schema variants, batch sizes, and indexing choices by throughput and latency to understand when a database-backed queue is a practical option.

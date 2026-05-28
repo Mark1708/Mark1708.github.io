@@ -18,6 +18,7 @@ featuresRu:
   - "Помечает устаревшие данные провайдеров и скрывает секреты для безопасного отображения"
 status: "active"
 startDate: "2026-05"
+image: "/images/projects/opencode-usage-monitor/preview.png"
 ---
 
 A sidebar plugin for the OpenCode TUI that monitors API usage across multiple providers. Tracks OpenAI daily cost, token consumption, and request counts. Displays Z.AI and GLM quota status with a two-level detail toggle and stale-data indicators. Features secret redaction for safe display.
