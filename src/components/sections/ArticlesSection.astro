@@ -7,12 +7,15 @@ interface Props { lang: Lang }
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const hseArticleHref = lang === 'ru'
+  ? '/ru/articles/hse-storing-retrieving-data'
+  : '/articles/hse-storing-retrieving-data';
 const habrArticleHref = lang === 'ru'
   ? '/ru/articles/spring-boot-nginx-deploy'
   : '/articles/spring-boot-nginx-deploy';
 
 const articles = [
-  { label: t('articles.item.hse') },
+  { label: t('articles.item.hse'), href: hseArticleHref },
   { label: t('articles.item.habr'), href: habrArticleHref },
 ];
 ---
