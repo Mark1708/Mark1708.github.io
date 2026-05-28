@@ -113,7 +113,14 @@ const jsonLd = {
 };
 ---
 
-<Base title={pageTitle} description={description} lang={lang}>
+<Base
+  title={pageTitle}
+  description={description}
+  lang={lang}
+  ogType="article"
+  articlePublishedTime={article.data.date}
+  articleTags={article.data.tags}
+>
   <article class="article-detail container">
     <a href={`${localePrefix || '/'}#articles`} class="article-detail__back">{t('article.back')}</a>
 
@@ -132,10 +139,28 @@ const jsonLd = {
         {article.data.tags.map(tag => <Tag label={tag} />)}
       </div>
 
-      {article.data.sourceUrl && (
-        <a href={article.data.sourceUrl} target="_blank" rel="noopener noreferrer" class="article-detail__source-link">
-          {t('article.readOnSource')} {sourceName} ↗
-        </a>
+      {article.data.links && article.data.links.length > 0 && (
+        <div class="article-detail__links">
+          {article.data.links.map(link => (
+            <a href={link.url} target="_blank" rel="noopener noreferrer" class="article-detail__source-link">
+              {lang === 'ru' ? link.labelRu : link.label} ↗
+            </a>
+          ))}
+        </div>
+      )}
+
+      {article.data.files && article.data.files.length > 0 && (
+        <div class="article-detail__attachments">
+          <h2 class="article-detail__attachments-title">{t('article.attachments')}</h2>
+          <div class="article-detail__attachments-list">
+            {article.data.files.map(file => (
+              <a href={file.url} download class="article-detail__download-link">
+                <span class="article-detail__download-label">{lang === 'ru' ? file.labelRu : file.label}</span>
+                <span class="article-detail__download-format">{file.format}</span>
+              </a>
+            ))}
+          </div>
+        </div>
       )}
     </header>
 
@@ -159,19 +184,6 @@ const jsonLd = {
       </div>
     )}
 
-    {article.data.files && article.data.files.length > 0 && (
-      <div class="article-detail__downloads">
-        <h2 class="article-detail__downloads-title">{t('article.downloadPresentation')}</h2>
-        <div class="article-detail__downloads-list">
-          {article.data.files.map(file => (
-            <a href={file.url} download class="article-detail__download-link">
-              <span class="article-detail__download-label">{lang === 'ru' ? file.labelRu : file.label}</span>
-              <span class="article-detail__download-format">{file.format}</span>
-            </a>
-          ))}
-        </div>
-      </div>
-    )}
   </article>
 
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
@@ -338,21 +350,32 @@ const jsonLd = {
       white-space: pre;
     }
 
-    .article-detail__downloads {
-      margin-top: var(--space-10);
-      padding-top: var(--space-8);
-      border-top: 1px solid var(--color-border);
+    .article-detail__links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
     }
 
-    .article-detail__downloads-title {
+    .article-detail__attachments {
+      margin-bottom: var(--space-5);
+      padding: var(--space-4);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+    }
+
+    .article-detail__attachments-title {
       color: var(--color-text);
       font-family: var(--font-display);
-      font-size: var(--text-xl);
+      font-size: var(--text-sm);
       font-weight: 700;
-      margin-bottom: var(--space-4);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-3);
     }
 
-    .article-detail__downloads-list {
+    .article-detail__attachments-list {
       display: flex;
       flex-wrap: wrap;
       gap: var(--space-3);
