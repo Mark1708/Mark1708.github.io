@@ -17,15 +17,34 @@
     "date": {
       "type": "string"
     },
-    "sourceUrl": {
-      "type": "string",
-      "format": "uri"
-    },
     "sourceName": {
       "type": "string"
     },
     "sourceNameRu": {
       "type": "string"
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "labelRu": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "label",
+          "labelRu",
+          "url"
+        ]
+      }
     },
     "tags": {
       "type": "array",

@@ -4,9 +4,15 @@ titleEn: "Deploying a Spring Boot Application with Nginx, Let's Encrypt and Dock
 description: "Пошаговое руководство по развёртыванию Spring Boot приложения с Nginx, SSL от Let's Encrypt и Docker Compose на Ubuntu сервере"
 descriptionEn: "Step-by-step guide to deploying a Spring Boot application with Nginx, Let's Encrypt SSL and Docker Compose on an Ubuntu server"
 date: "2022-09-08"
-sourceUrl: "https://habr.com/ru/articles/687210/"
 sourceName: "Habr"
 sourceNameRu: "Хабр"
+links:
+  - label: "Read on Habr"
+    labelRu: "Читать на Хабре"
+    url: "https://habr.com/ru/articles/687210/"
+  - label: "GitHub Repository"
+    labelRu: "Репозиторий на GitHub"
+    url: "https://github.com/Mark1708/simple-spring-boot-app"
 tags: ["Java", "Spring Boot", "Nginx", "Docker", "DevOps"]
 readingTime: "7 min"
 readers: "31K"
