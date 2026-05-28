@@ -1,4 +1,4 @@
-х# Mark Gurianov — Portfolio & Resume
+# Mark Gurianov — Portfolio & Resume
 
 > Bilingual Astro portfolio and resume site for presenting backend engineering experience, skills, and selected projects.
 
