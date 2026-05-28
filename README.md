@@ -13,7 +13,6 @@
 | Primary stack | Astro 6, TypeScript, CSS, Markdown content collections |
 | Live preview | <https://mark1708.ru> |
 | Quick verify | `npm ci && npm run build` |
-| Verification level | Execution-verified for build; manifest-verified for scripts and deployment |
 
 ## Summary
 
@@ -75,17 +74,6 @@ Node.js `>=22.12.0` is declared in `package.json`.
 ├── src/pages/                    # English and Russian pages
 └── src/styles/                   # Global styles and CSS tokens
 ```
-
-## Validation
-
-| Check | Command | Verification level |
-|---|---|---|
-| Install | `npm ci` | Execution-verified |
-| Build | `npm run build` | Execution-verified |
-| Dev server | `npm run dev` | Manifest-verified |
-| Preview server | `npm run preview` | Manifest-verified |
-| Tests | Not configured in `package.json` | Not available |
-| Lint/typecheck | No dedicated `lint` or `typecheck` script in `package.json` | Not available |
 
 ## Deployment
 
