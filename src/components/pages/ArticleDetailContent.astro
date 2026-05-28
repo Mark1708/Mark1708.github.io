@@ -16,9 +16,10 @@ type MarkdownBlock =
 interface Props {
   lang: ContentLang;
   article: CollectionEntry<'articles'>;
+  Content: any;
 }
 
-const { lang, article } = Astro.props;
+const { lang, article, Content } = Astro.props;
 const t = getTranslations(lang);
 const localePrefix = getLocalePrefix(lang);
 const title = lang === 'ru' ? article.data.title : article.data.titleEn;
@@ -131,13 +132,17 @@ const jsonLd = {
         {article.data.tags.map(tag => <Tag label={tag} />)}
       </div>
 
-      <a href={article.data.sourceUrl} target="_blank" rel="noopener noreferrer" class="article-detail__source-link">
-        {t('article.readOnSource')} {sourceName} ↗
-      </a>
+      {article.data.sourceUrl && (
+        <a href={article.data.sourceUrl} target="_blank" rel="noopener noreferrer" class="article-detail__source-link">
+          {t('article.readOnSource')} {sourceName} ↗
+        </a>
+      )}
     </header>
 
     {lang === 'ru' ? (
-      <div class="article-detail__body" set:html={article.body} />
+      <div class="article-detail__body">
+        <Content />
+      </div>
     ) : (
       <div class="article-detail__body">
         {englishBlocks.map(block => (

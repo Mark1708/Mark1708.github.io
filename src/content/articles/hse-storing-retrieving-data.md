@@ -4,7 +4,6 @@ titleEn: "Storing and Retrieving Data: What a Manager Needs to Know Before Talki
 description: "Расширенное сопровождение к лекции в ВШЭ о типах данных, СУБД, архитектурах хранения и роли данных в современном бизнесе"
 descriptionEn: "An extended companion to an HSE University lecture on data types, DBMS, storage architectures and the role of data in modern business"
 date: "2025-06-03"
-sourceUrl: "https://www.hse.ru/"
 sourceName: "HSE University"
 sourceNameRu: "ВШЭ"
 tags: ["Data Architecture", "Databases", "Data Engineering", "OLAP", "NoSQL"]

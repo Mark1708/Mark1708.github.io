@@ -1,16 +1,17 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry, render } from 'astro:content';
 import ArticleDetailContent from '../../components/pages/ArticleDetailContent.astro';
 
 export async function getStaticPaths() {
   const articles = await getCollection('articles');
   return articles.map(article => ({
     params: { slug: article.id },
-    props: { article },
   }));
 }
 
-const { article } = Astro.props;
+const { slug } = Astro.params;
+const article = await getEntry('articles', slug!);
+const { Content } = await render(article!);
 ---
 
-<ArticleDetailContent lang="en" article={article} />
+<ArticleDetailContent lang="en" article={article!} Content={Content} />

@@ -51,7 +51,7 @@ const articles = defineCollection({
     description: z.string(),
     descriptionEn: z.string(),
     date: z.string(),
-    sourceUrl: z.string().url(),
+    sourceUrl: z.string().url().optional(),
     sourceName: z.string(),
     sourceNameRu: z.string(),
     tags: z.array(z.string()),
