@@ -27,4 +27,6 @@ startDate: "2026-05"
 image: "/images/projects/tmh/preview.gif"
 ---
 
-Declarative tmux session management powered by YAML configuration files. Features a TUI dashboard with fuzzy session picker, drift detection between declared and running sessions, dotfile sync, and freeze/import/export workflows. Built as a single static binary with GoReleaser.
+Declarative tmux session management powered by YAML configuration files. The tool includes a TUI dashboard with fuzzy session picker, drift detection between declared and running sessions, dotfile sync, and freeze/import/export workflows.
+
+The project is written in Go and ships as a single static binary built with GoReleaser. This format works well for portable workspace setup without complex installation.
