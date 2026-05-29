@@ -10,7 +10,7 @@ bodyRu: |
   В коде реализован линейный расчет Y-STR TMRCA по методу Клёсова с коррекцией обратных мутаций. Это локальный исследовательский инструмент, а не клиническая или диагностическая система.
 technologies: ["Java", "Maven", "Apache Spark", "JCommander", "Log4j", "JUnit"]
 githubUrl: "https://github.com/Mark1708/ranking-str-data"
-featured: false
+featured: true
 order: 12
 summary: "Java research CLI for ranking Y-STR haplotype data"
 summaryRu: "Java CLI для исследовательского ранжирования Y-STR данных"
