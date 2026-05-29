@@ -259,12 +259,11 @@ const jsonLd = {
         let activeUpdateFrame = 0;
         let fillUpdateFrame = 0;
 
-        const getDotCenterInTrack = (item: HTMLElement): number => {
-          const dot = item.querySelector<HTMLElement>('.article-detail__toc-dot') || item;
+        const getDotCenterInTrack = (dot: HTMLElement): number => {
           const trackRect = tocTrack.getBoundingClientRect();
           const dotRect = dot.getBoundingClientRect();
 
-          return dotRect.top + dotRect.height / 2 - trackRect.top + tocTrack.scrollTop;
+          return dotRect.top - trackRect.top + tocTrack.scrollTop + dotRect.height / 2;
         };
 
         const updateTocFill = (): void => {
@@ -272,16 +271,20 @@ const jsonLd = {
 
           const firstItem = tocItems[0];
           const lastItem = tocItems[tocItems.length - 1];
-          const activeItem = tocItems[Math.max(activeTocIndex, 0)] || firstItem;
-          if (!firstItem || !lastItem || !activeItem) return;
+          const activeItem = tocList.querySelector<HTMLElement>('.article-detail__toc-item--active') || firstItem;
+          const firstDot = firstItem?.querySelector<HTMLElement>('.article-detail__toc-dot');
+          const lastDot = lastItem?.querySelector<HTMLElement>('.article-detail__toc-dot');
+          const activeDot = activeItem?.querySelector<HTMLElement>('.article-detail__toc-dot');
 
-          const firstCenter = getDotCenterInTrack(firstItem);
-          const activeCenter = getDotCenterInTrack(activeItem);
-          const lastCenter = getDotCenterInTrack(lastItem);
+          if (!firstDot || !lastDot || !activeDot) return;
+
+          const firstCenter = getDotCenterInTrack(firstDot);
+          const activeCenter = getDotCenterInTrack(activeDot);
+          const lastCenter = getDotCenterInTrack(lastDot);
           const fillHeight = Math.max(0, activeCenter - firstCenter);
 
           tocTrack.style.setProperty('--toc-line-top', `${firstCenter}px`);
-          tocTrack.style.setProperty('--toc-line-bottom', `${Math.max(0, tocTrack.scrollHeight - lastCenter)}px`);
+          tocTrack.style.setProperty('--toc-line-height', `${Math.max(0, lastCenter - firstCenter)}px`);
           tocFill.style.top = `${firstCenter}px`;
           tocFill.style.height = `${fillHeight}px`;
         };
@@ -296,7 +299,22 @@ const jsonLd = {
         };
 
         const keepActiveItemVisible = (item: HTMLElement): void => {
-          item.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+          const trackRect = tocTrack.getBoundingClientRect();
+          const itemRect = item.getBoundingClientRect();
+          const padding = 12;
+
+          if (itemRect.top < trackRect.top + padding) {
+            tocTrack.scrollTo({
+              top: tocTrack.scrollTop + itemRect.top - trackRect.top - padding,
+              behavior: 'smooth',
+            });
+          } else if (itemRect.bottom > trackRect.bottom - padding) {
+            tocTrack.scrollTo({
+              top: tocTrack.scrollTop + itemRect.bottom - trackRect.bottom + padding,
+              behavior: 'smooth',
+            });
+          }
+
           scheduleTocFillUpdate();
         };
 
@@ -957,20 +975,20 @@ const jsonLd = {
     }
 
     .article-detail__toc-track {
-      --toc-dot-size: 8px;
-      --toc-dot-column: 18px;
-      --toc-axis-right: calc(var(--toc-dot-column) / 2);
+      --toc-dot-column: 16px;
+      --toc-track-padding-right: 10px;
+      --toc-axis-right: calc(var(--toc-track-padding-right) + var(--toc-dot-column) / 2);
       --toc-line-top: 0px;
-      --toc-line-bottom: 0px;
+      --toc-line-height: 0px;
       position: relative;
       width: 100%;
-      max-height: calc(100vh - 120px - var(--space-6));
+      max-height: calc(100vh - 140px);
       min-height: 0;
       overflow-x: hidden;
       overflow-y: auto;
-      padding: var(--space-1) 0;
+      padding: var(--space-1) var(--toc-track-padding-right) var(--space-1) 0;
       scrollbar-width: thin;
-      scrollbar-color: color-mix(in oklch, var(--color-border) 70%, transparent) transparent;
+      scrollbar-color: rgba(96, 165, 250, 0.35) transparent;
     }
 
     .article-detail__toc-track::before {
@@ -978,11 +996,10 @@ const jsonLd = {
       position: absolute;
       top: var(--toc-line-top);
       right: var(--toc-axis-right);
-      bottom: var(--toc-line-bottom);
-      width: 2px;
-      background: color-mix(in oklch, var(--color-border) 75%, transparent);
-      border-radius: 1px;
-      transform: translateX(50%);
+      width: 1px;
+      height: var(--toc-line-height);
+      background: rgba(148, 163, 184, 0.24);
+      pointer-events: none;
       z-index: 0;
     }
 
@@ -1003,21 +1020,20 @@ const jsonLd = {
       position: absolute;
       right: var(--toc-axis-right);
       top: 0;
-      width: 2px;
+      width: 1px;
       height: 0;
       background: var(--color-accent);
-      border-radius: 1px;
-      transform: translateX(50%);
+      pointer-events: none;
       transition:
-        height var(--duration-normal) var(--ease-out),
-        top var(--duration-normal) var(--ease-out);
+        top 160ms var(--ease-out),
+        height 160ms var(--ease-out);
       z-index: 0;
     }
 
     .article-detail__toc-list {
       display: flex;
       flex-direction: column;
-      gap: 0.45rem;
+      gap: 4px;
       list-style: none;
       margin: 0;
       padding: 0;
@@ -1030,29 +1046,32 @@ const jsonLd = {
       align-items: center;
       display: grid;
       grid-template-columns: minmax(0, 1fr) var(--toc-dot-column);
-      gap: var(--space-2);
+      column-gap: 10px;
       position: relative;
-      min-height: 34px;
-      padding: var(--space-1) 0;
+      min-height: 30px;
+      padding: 2px 0;
       cursor: pointer;
+      background: transparent;
+      border: 0;
       border-radius: var(--radius-md);
-      transition: background var(--duration-fast) var(--ease-out);
+      outline: 0;
     }
 
     .article-detail__toc-label {
       color: var(--color-text-muted);
       display: -webkit-box;
-      font-size: 0.78rem;
+      font-size: 13px;
       font-weight: 500;
-      line-height: 1.38;
+      line-height: 1.35;
       text-align: right;
       max-width: 100%;
+      min-width: 0;
       overflow: hidden;
       -webkit-box-orient: vertical;
       -webkit-line-clamp: 2;
       line-clamp: 2;
       white-space: normal;
-      opacity: 0.64;
+      opacity: 0.78;
       transition:
         color var(--duration-fast) var(--ease-out),
         font-weight var(--duration-fast) var(--ease-out),
@@ -1062,19 +1081,18 @@ const jsonLd = {
 
     .article-detail__toc-dot {
       align-self: center;
-      background: var(--color-bg);
-      border: 1px solid var(--color-text-muted);
+      background: rgba(148, 163, 184, 0.55);
       border-radius: 999px;
+      box-shadow: 0 0 0 3px var(--color-bg);
       display: block;
       justify-self: center;
       position: relative;
-      width: var(--toc-dot-size);
-      height: var(--toc-dot-size);
+      width: 7px;
+      height: 7px;
       flex-shrink: 0;
       z-index: 2;
       transition:
-        background var(--duration-fast) var(--ease-out),
-        border-color var(--duration-fast) var(--ease-out),
+        background-color var(--duration-fast) var(--ease-out),
         box-shadow var(--duration-fast) var(--ease-out),
         height var(--duration-fast) var(--ease-out),
         width var(--duration-fast) var(--ease-out);
@@ -1093,26 +1111,34 @@ const jsonLd = {
     }
 
     .article-detail__toc-item:hover .article-detail__toc-dot {
-      border-color: var(--color-text);
+      background: rgba(229, 231, 235, 0.85);
     }
 
     .article-detail__toc-item--active {
-      background: color-mix(in oklch, var(--color-accent-dim) 45%, transparent);
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+
+    .article-detail__toc-item--active::before,
+    .article-detail__toc-item--active::after {
+      content: none;
     }
 
     .article-detail__toc-item--active .article-detail__toc-label {
-      color: var(--color-accent);
+      color: var(--color-text);
       font-weight: 700;
       opacity: 1;
       transform: translateX(-2px);
     }
 
     .article-detail__toc-item--active .article-detail__toc-dot {
-      border-color: var(--color-accent);
       background: var(--color-accent);
-      box-shadow: 0 0 10px var(--color-accent-glow);
-      height: 10px;
-      width: 10px;
+      box-shadow:
+        0 0 0 3px var(--color-bg),
+        0 0 0 5px rgba(96, 165, 250, 0.18);
+      height: 9px;
+      width: 9px;
     }
 
     .article-detail__toc-item:focus-visible {
