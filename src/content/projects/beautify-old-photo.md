@@ -8,7 +8,7 @@ bodyRu: |
   Проект документирует примеры до и после обработки, а также ожидаемые ограничения model-based restoration. Акцент сделан на понятном исследовательском процессе и проверяемом результате, а не на обещании идеального восстановления каждого изображения.
 technologies: ["Python", "GFPGAN", "DeOldify", "PyTorch"]
 githubUrl: "https://github.com/Mark1708/beautify-old-photo"
-featured: true
+featured: false
 order: 7
 summary: "GFPGAN and DeOldify notebook for photo restoration"
 summaryRu: "Notebook GFPGAN и DeOldify для восстановления фото"
@@ -25,4 +25,6 @@ startDate: "2023-08"
 image: "/images/projects/beautify-old-photo/preview.jpg"
 ---
 
-A research notebook that combines GFPGAN face enhancement with DeOldify automatic colorization. It demonstrates how aged or damaged photos can be restored in a reproducible Colab/Jupyter workflow and documents the expected limitations of model-based restoration.
+A research notebook that combines GFPGAN face enhancement with DeOldify automatic colorization. It demonstrates how aged or damaged photos can be restored in a reproducible Colab/Jupyter workflow.
+
+The project documents before/after examples and the expected limitations of model-based restoration. The focus is a clear research process and verifiable result, not a promise of perfect recovery for every image.
