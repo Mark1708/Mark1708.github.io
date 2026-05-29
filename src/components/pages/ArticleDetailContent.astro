@@ -133,7 +133,7 @@ const jsonLd = {
   articleTags={article.data.tags}
 >
   <article class="article-detail container">
-    <a href={`${localePrefix || '/'}#articles`} class="article-detail__back">{t('article.back')}</a>
+    <a href={`${localePrefix}/articles/`} class="article-detail__back">{t('article.back')}</a>
 
     <div class="article-detail__layout">
       <div class="article-detail__main">
@@ -142,13 +142,13 @@ const jsonLd = {
           <h1 class="article-detail__title">{title}</h1>
           <p class="article-detail__description">{description}</p>
 
-          <div class="article-detail__meta" aria-label="Article metadata">
+          <div class="article-detail__meta" aria-label={lang === 'ru' ? 'Метаданные статьи' : 'Article metadata'}>
             <time datetime={article.data.date}>{formattedDate}</time>
             <span>{readingMinutes} {t('article.readingTime')}</span>
             {article.data.readers && <span>{article.data.readers} {t('article.readers')}</span>}
           </div>
 
-          <div class="article-detail__tags" aria-label="Article tags">
+          <div class="article-detail__tags" aria-label={lang === 'ru' ? 'Теги статьи' : 'Article tags'}>
             {article.data.tags.map(tag => <Tag label={tag} />)}
           </div>
 
