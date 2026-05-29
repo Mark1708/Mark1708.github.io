@@ -12,6 +12,8 @@ featured: true
 order: 6
 summary: "PostgreSQL queue benchmark for Spring Boot services"
 summaryRu: "Бенчмарк PostgreSQL-очередей для Spring Boot"
+demonstrates: "Payment-style queue integration, outbox / queue trade-offs, Spring Boot"
+demonstratesRu: "Интеграцию очередей, outbox / queue подход, Spring Boot"
 features:
   - "Benchmarks PostgreSQL-backed queue processing in Spring Boot applications"
   - "Compares schema variants, batch sizes, and indexing strategies under load"
@@ -25,4 +27,6 @@ startDate: "2024-10"
 image: "/images/projects/spring-yoomoney-db-queue/preview.png"
 ---
 
-A performance benchmark for PostgreSQL-backed queue processing in Spring Boot applications. The experiment compares schema variants, batch sizes, and indexing choices by throughput and latency to understand when a database-backed queue is a practical option.
+A performance benchmark for PostgreSQL-backed queue processing in Spring Boot applications. The experiment compares schema variants, batch sizes, and indexing choices by throughput and latency.
+
+The goal is to understand when a database-backed queue remains a practical option under load and what trade-offs appear when choosing table structure, batching, and indexing strategy.
