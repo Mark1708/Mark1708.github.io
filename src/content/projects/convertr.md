@@ -28,3 +28,5 @@ image: "/images/projects/convertr/preview.png"
 ---
 
 A Go-based CLI tool that routes between file formats using the best available local backend.
+
+Convertr works as a single entry point for document, image, audio, video, and data-format workflows. Specific conversions are delegated to specialized tools such as Pandoc, FFmpeg, LibreOffice, ImageMagick, jq, and yq, so the project stays extensible without reimplementing mature converters.
