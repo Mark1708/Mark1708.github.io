@@ -1,0 +1,11 @@
+---
+// biome-ignore-all lint/correctness/noUnusedImports lint/correctness/noUnusedVariables: Astro templates reference frontmatter imports and variables.
+import { getCollection } from 'astro:content';
+import ArticlesIndexContent from '../../../components/pages/ArticlesIndexContent.astro';
+
+const articles = (await getCollection('articles')).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+---
+
+<ArticlesIndexContent lang="ru" articles={articles} />
