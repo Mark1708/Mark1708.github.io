@@ -10,10 +10,32 @@ bodyRu: |
   Gateway объединяет вызовы catalog и inventory для `/api/products`. Web service служит текущей публичной витриной и построен на React, Vite, TypeScript, PatternFly и Express.
 technologies: ["Java", "Spring Boot", "Quarkus", "Vert.x", "React", "Vite", "PostgreSQL", "Docker"]
 githubUrl: "https://github.com/Mark1708/simple-cloud-store"
-featured: false
+featured: true
 order: 13
 summary: "Cloud store sandbox with React and Java microservices"
 summaryRu: "Sandbox магазина на React и Java-микросервисах"
+demonstrates: "Microservices, gateway composition, file/store flow, Docker infrastructure"
+demonstratesRu: "Микросервисы, gateway composition, store flow, Docker-инфраструктуру"
+problem: "Compare multiple Java service styles in one coherent storefront scenario instead of isolated toy examples."
+problemRu: "Сравнить несколько Java service styles в одном цельном сценарии витрины, а не в изолированных toy examples."
+architecture: "A React/Vite storefront calls a Vert.x gateway, which composes catalog and inventory services backed by PostgreSQL and local Docker infrastructure."
+architectureRu: "React/Vite витрина обращается к Vert.x gateway, который объединяет catalog и inventory services с PostgreSQL и локальной Docker-инфраструктурой."
+decisions:
+  - "Use different Java frameworks per service to compare service boundaries and runtime styles."
+  - "Put composition behind a gateway so the frontend depends on one stable API edge."
+decisionsRu:
+  - "Использовать разные Java frameworks по сервисам, чтобы сравнить service boundaries и runtime styles."
+  - "Спрятать композицию за gateway, чтобы frontend зависел от одного стабильного API edge."
+role:
+  - "Designed the service split, gateway route, frontend integration, and local Docker stack."
+roleRu:
+  - "Спроектировал разделение сервисов, gateway route, frontend-интеграцию и локальный Docker stack."
+futureImprovements:
+  - "Add contract tests between gateway and backend services."
+  - "Introduce tracing and production-ready deployment manifests."
+futureImprovementsRu:
+  - "Добавить contract tests между gateway и backend services."
+  - "Добавить tracing и production-ready deployment manifests."
 features:
   - "Combines a React 19 and Vite storefront with catalog, inventory, and gateway services"
   - "Uses Spring Boot for catalog, Quarkus for inventory, and Vert.x as the API/static edge"
