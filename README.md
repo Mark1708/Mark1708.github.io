@@ -49,6 +49,9 @@ npm run build
 
 # preview the production build locally
 npm run preview
+
+# check bilingual content parity without failing on known content drift
+npm run check:content
 ```
 
 Node.js `>=22.12.0` is declared in `package.json`.
@@ -57,10 +60,27 @@ Node.js `>=22.12.0` is declared in `package.json`.
 
 | Route | Description |
 |---|---|
-| `/` | English home page with hero, experience timeline, skills, and project cards |
+| `/` | English home page with hero, experience, skills, featured projects, publications CTA, and contacts |
 | `/ru/` | Russian home page |
+| `/projects/` | English projects catalog |
+| `/ru/projects/` | Russian projects catalog |
+| `/projects/[slug]/` | English project architecture/detail page |
+| `/ru/projects/[slug]/` | Russian project architecture/detail page |
+| `/articles/` | English publications and articles catalog |
+| `/ru/articles/` | Russian publications and articles catalog |
+| `/articles/[slug]/` | English article detail page |
+| `/ru/articles/[slug]/` | Russian article detail page |
 | `/resume/` | English printable resume page |
 | `/ru/resume/` | Russian printable resume page |
+
+## Content workflow
+
+- Projects live in `src/content/projects/*.md` and are validated by the `projects` collection in `src/content.config.ts`.
+- Articles and talks live in `src/content/articles/*.md` and power both the publications catalog and article detail pages.
+- Experience entries live in `src/content/experience/*.md`; skills and social/profile data live in `src/data/`.
+- Localized project fields use `*Ru` variants such as `descriptionRu`, `summaryRu`, `featuresRu`, and optional case-study fields like `problemRu` or `architectureRu`.
+- `npm run check:content` runs a warning-only bilingual parity checker for article/project/experience Markdown. Use `node scripts/check-content-parity.mjs --strict` when the current content drift is resolved and parity issues should fail the command.
+- English routes are unprefixed; Russian routes use `/ru/`. Shared locale helpers live in `src/i18n/`.
 
 ## Project structure
 
