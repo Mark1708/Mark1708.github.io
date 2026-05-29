@@ -21,26 +21,34 @@ const featuredProjects = (await getCollection('projects'))
     <h2 class="section-title" id="featured-projects-title">{t('section.featuredProjects')}</h2>
 
     <div class="featured-grid">
-      {featuredProjects.map(project => (
-        <article class="featured-card">
-          <div class="featured-card__header">
-            <h3 class="featured-card__title">
-              <a href={isRu ? `/ru/projects/${project.id}` : `/projects/${project.id}`}>
-                {project.data.title}
-              </a>
-            </h3>
-          </div>
+      {featuredProjects.map(project => {
+        const demonstratesEn = project.data.demonstrates?.trim();
+        const demonstratesRu = project.data.demonstratesRu?.trim();
+        const demonstrates = isRu ? demonstratesRu || demonstratesEn : demonstratesEn;
 
-          <p class="featured-card__summary">
-            {isRu && project.data.summaryRu ? project.data.summaryRu : project.data.summary ?? project.data.description}
-          </p>
+        return (
+          <article class="featured-card">
+            <div class="featured-card__header">
+              <h3 class="featured-card__title">
+                <a href={isRu ? `/ru/projects/${project.id}` : `/projects/${project.id}`}>
+                  {project.data.title}
+                </a>
+              </h3>
+            </div>
 
-          <p class="featured-card__demonstrates">
-            <span>{t('featuredProjects.demonstrates')}</span>
-            {isRu && project.data.demonstratesRu ? project.data.demonstratesRu : project.data.demonstrates}
-          </p>
-        </article>
-      ))}
+            <p class="featured-card__summary">
+              {isRu && project.data.summaryRu ? project.data.summaryRu : project.data.summary ?? project.data.description}
+            </p>
+
+            {demonstrates && (
+              <p class="featured-card__demonstrates">
+                <span>{t('featuredProjects.demonstrates')}</span>
+                {demonstrates}
+              </p>
+            )}
+          </article>
+        );
+      })}
     </div>
   </div>
 </section>

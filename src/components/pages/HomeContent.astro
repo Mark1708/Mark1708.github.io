@@ -2,14 +2,12 @@
 // biome-ignore-all lint/correctness/noUnusedImports: Astro templates reference frontmatter imports.
 // biome-ignore-all lint/correctness/noUnusedVariables: Astro templates reference frontmatter variables.
 import social from '../../data/social.json';
-import type { ContentLang } from '../../i18n/content';
+import { type ContentLang, getLocalePrefix } from '../../i18n/content';
 import { useTranslations as getTranslations } from '../../i18n/ui';
 import Base from '../../layouts/Base.astro';
 import Timeline from '../experience/Timeline.astro';
 import HeroSection from '../hero/HeroSection.astro';
 import FeaturedProjects from '../projects/FeaturedProjects.astro';
-import ProjectCard from '../projects/ProjectCard.astro';
-import ArticlesSection from '../sections/ArticlesSection.astro';
 import SkillGrid from '../skills/SkillGrid.astro';
 
 interface Props {
@@ -23,6 +21,7 @@ const description = lang === 'ru'
   ? 'Backend-разработчик с 5+ годами коммерческого опыта. Java, Spring Boot, распределённые системы. Ставрополь.'
   : undefined;
 const footerName = t('footer.text') || (lang === 'ru' ? social.name : social.nameEn);
+const localePrefix = getLocalePrefix(lang);
 ---
 
 <Base lang={lang} title={title} description={description}>
@@ -31,8 +30,19 @@ const footerName = t('footer.text') || (lang === 'ru' ? social.name : social.nam
     <Timeline lang={lang} />
     <SkillGrid lang={lang} />
     <FeaturedProjects lang={lang} />
-    <ArticlesSection lang={lang} />
-    <ProjectCard lang={lang} />
+
+    <section class="section home-ctas" aria-label={lang === 'ru' ? 'Основные разделы' : 'Primary sections'}>
+      <div class="container home-ctas__inner">
+        <a href={`${localePrefix}/projects/`} class="home-cta">
+          <span>{t('home.cta.projects')}</span>
+          <span aria-hidden="true">→</span>
+        </a>
+        <a href={`${localePrefix}/articles/`} class="home-cta">
+          <span>{t('home.cta.publications')}</span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
 
     <footer class="footer">
       <div class="container">
@@ -43,14 +53,63 @@ const footerName = t('footer.text') || (lang === 'ru' ? social.name : social.nam
 </Base>
 
 <style>
+  .home-ctas {
+    padding-top: 0;
+  }
+
+  .home-ctas__inner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-4);
+  }
+
+  .home-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    min-width: min(100%, 260px);
+    padding: var(--space-4) var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-decoration: none;
+    transition:
+      border-color var(--duration-normal) var(--ease-out),
+      color var(--duration-normal) var(--ease-out),
+      transform var(--duration-normal) var(--ease-out);
+  }
+
+  .home-cta:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+
   .footer {
     border-top: 1px solid var(--color-border);
     padding-block: var(--space-8);
   }
+
   .footer__text {
     font-family: var(--font-mono);
     font-size: var(--text-xs);
     color: var(--color-text-muted);
     text-align: center;
+  }
+
+  @media (max-width: 640px) {
+    .home-ctas__inner {
+      flex-direction: column;
+    }
+
+    .home-cta {
+      width: 100%;
+    }
   }
 </style>
