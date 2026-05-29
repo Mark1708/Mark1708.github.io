@@ -43,6 +43,15 @@ function escapeHtml(value: string): string {
     .replace(/'/g, '&#39;');
 }
 
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\sа-яё-]/gi, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 function renderInlineMarkdown(value: string): string {
   return escapeHtml(value)
     .replace(/`([^`]+)`/g, '<code>$1</code>')
@@ -126,77 +135,361 @@ const jsonLd = {
   <article class="article-detail container">
     <a href={`${localePrefix || '/'}#articles`} class="article-detail__back">{t('article.back')}</a>
 
-    <header class="article-detail__header">
-      <p class="article-detail__source">{sourceName}</p>
-      <h1 class="article-detail__title">{title}</h1>
-      <p class="article-detail__description">{description}</p>
+    <div class="article-detail__layout">
+      <div class="article-detail__main">
+        <header class="article-detail__header">
+          <p class="article-detail__source">{sourceName}</p>
+          <h1 class="article-detail__title">{title}</h1>
+          <p class="article-detail__description">{description}</p>
 
-      <div class="article-detail__meta" aria-label="Article metadata">
-        <time datetime={article.data.date}>{formattedDate}</time>
-        <span>{readingMinutes} {t('article.readingTime')}</span>
-        {article.data.readers && <span>{article.data.readers} {t('article.readers')}</span>}
-      </div>
+          <div class="article-detail__meta" aria-label="Article metadata">
+            <time datetime={article.data.date}>{formattedDate}</time>
+            <span>{readingMinutes} {t('article.readingTime')}</span>
+            {article.data.readers && <span>{article.data.readers} {t('article.readers')}</span>}
+          </div>
 
-      <div class="article-detail__tags" aria-label="Article tags">
-        {article.data.tags.map(tag => <Tag label={tag} />)}
-      </div>
+          <div class="article-detail__tags" aria-label="Article tags">
+            {article.data.tags.map(tag => <Tag label={tag} />)}
+          </div>
 
-      {article.data.links && article.data.links.length > 0 && (
-        <div class="article-detail__links">
-          {article.data.links.map(link => (
-            <a href={link.url} target="_blank" rel="noopener noreferrer" class="article-detail__source-link">
-              {lang === 'ru' ? link.labelRu : link.label} ↗
-            </a>
-          ))}
-        </div>
-      )}
+          {article.data.links && article.data.links.length > 0 && (
+            <div class="article-detail__links">
+              {article.data.links.map(link => (
+                <a href={link.url} target="_blank" rel="noopener noreferrer" class="article-detail__source-link">
+                  {lang === 'ru' ? link.labelRu : link.label} ↗
+                </a>
+              ))}
+            </div>
+          )}
 
-      {article.data.files && article.data.files.length > 0 && (
-        <div class="article-detail__attachments">
-          <h2 class="article-detail__attachments-title">{t('article.attachments')}</h2>
-          <div class="article-detail__attachments-list">
-            {article.data.files.map(file => (
-              <a href={file.url} download class="article-detail__download-link">
-                <span class="article-detail__download-label">{lang === 'ru' ? file.labelRu : file.label}</span>
-                <span class="article-detail__download-format">{file.format}</span>
-              </a>
+          {article.data.files && article.data.files.length > 0 && (
+            <div class="article-detail__attachments">
+              <h2 class="article-detail__attachments-title">{t('article.attachments')}</h2>
+              <div class="article-detail__attachments-list">
+                {article.data.files.map(file => (
+                  <a href={file.url} download class="article-detail__download-link">
+                    <span class="article-detail__download-label">{lang === 'ru' ? file.labelRu : file.label}</span>
+                    <span class="article-detail__download-format">{file.format}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </header>
+
+        {lang === 'ru' ? (
+          <div class="article-detail__body">
+            <Content />
+          </div>
+        ) : (
+          <div class="article-detail__body">
+            {englishBlocks.map(block => (
+              block.type === 'heading' ? (
+                <h2 id={slugify(block.content)} set:html={renderInlineMarkdown(block.content)} />
+              ) : block.type === 'list' ? (
+                <ul>{block.items.map(item => <li set:html={renderInlineMarkdown(item)} />)}</ul>
+              ) : block.type === 'code' ? (
+                <pre><code class={block.language ? `language-${block.language}` : undefined}>{block.content}</code></pre>
+              ) : (
+                <p set:html={renderInlineMarkdown(block.content)} />
+              )
             ))}
           </div>
+        )}
+      </div>
+
+      <nav class="article-detail__toc" aria-label="Section navigation">
+        <p class="article-detail__toc-title">{t('article.toc')}</p>
+        <div class="article-detail__toc-track">
+          <div class="article-detail__toc-fill" id="toc-fill"></div>
+          <ol class="article-detail__toc-list"></ol>
         </div>
-      )}
-    </header>
-
-    {lang === 'ru' ? (
-      <div class="article-detail__body">
-        <Content />
-      </div>
-    ) : (
-      <div class="article-detail__body">
-        {englishBlocks.map(block => (
-          block.type === 'heading' ? (
-            <h2 set:html={renderInlineMarkdown(block.content)} />
-          ) : block.type === 'list' ? (
-            <ul>{block.items.map(item => <li set:html={renderInlineMarkdown(item)} />)}</ul>
-          ) : block.type === 'code' ? (
-            <pre><code class={block.language ? `language-${block.language}` : undefined}>{block.content}</code></pre>
-          ) : (
-            <p set:html={renderInlineMarkdown(block.content)} />
-          )
-        ))}
-      </div>
-    )}
-
+      </nav>
+    </div>
   </article>
 
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
+  <script>
+    function initArticlePage(): void {
+      const body = document.querySelector('.article-detail__body') as HTMLElement | null;
+      if (!body) return;
+
+      const headings = body.querySelectorAll('h2');
+      const tocList = document.querySelector('.article-detail__toc-list') as HTMLOListElement | null;
+      const tocTrack = document.querySelector('.article-detail__toc-track') as HTMLElement | null;
+
+      // --- TOC nav-rail generation + scroll spy ---
+      if (tocList && tocTrack && headings.length > 0) {
+        headings.forEach((heading, index) => {
+          if (!heading.id) {
+            heading.id = heading.textContent
+              ?.toLowerCase()
+              .replace(/[^\w\sа-яё-]/gi, '')
+              .replace(/\s+/g, '-')
+              .replace(/-+/g, '-')
+              .replace(/^-|-$/g, '') || `section-${index}`;
+          }
+
+          const li = document.createElement('li');
+          li.className = 'article-detail__toc-item';
+          li.tabIndex = 0;
+          li.setAttribute('role', 'button');
+          li.setAttribute('aria-label', heading.textContent || `Section ${index + 1}`);
+          li.setAttribute('data-i', String(index));
+
+          const label = document.createElement('span');
+          label.className = 'article-detail__toc-label';
+          label.textContent = heading.textContent;
+          label.title = heading.textContent || `Section ${index + 1}`;
+
+          const dot = document.createElement('span');
+          dot.className = 'article-detail__toc-dot';
+          dot.setAttribute('aria-hidden', 'true');
+
+          li.appendChild(label);
+          li.appendChild(dot);
+          tocList.appendChild(li);
+        });
+
+        const tocFill = document.getElementById('toc-fill');
+        const tocItems = tocList.querySelectorAll<HTMLElement>('.article-detail__toc-item');
+        const headingArray = Array.from(headings);
+        let activeTocIndex = -1;
+        let activeUpdateFrame = 0;
+        let fillUpdateFrame = 0;
+
+        const getDotCenterInTrack = (item: HTMLElement): number => {
+          const dot = item.querySelector<HTMLElement>('.article-detail__toc-dot') || item;
+          const trackRect = tocTrack.getBoundingClientRect();
+          const dotRect = dot.getBoundingClientRect();
+
+          return dotRect.top + dotRect.height / 2 - trackRect.top + tocTrack.scrollTop;
+        };
+
+        const updateTocFill = (): void => {
+          if (!tocFill || tocItems.length === 0) return;
+
+          const firstItem = tocItems[0];
+          const lastItem = tocItems[tocItems.length - 1];
+          const activeItem = tocItems[Math.max(activeTocIndex, 0)] || firstItem;
+          if (!firstItem || !lastItem || !activeItem) return;
+
+          const firstCenter = getDotCenterInTrack(firstItem);
+          const activeCenter = getDotCenterInTrack(activeItem);
+          const lastCenter = getDotCenterInTrack(lastItem);
+          const fillHeight = Math.max(0, activeCenter - firstCenter);
+
+          tocTrack.style.setProperty('--toc-line-top', `${firstCenter}px`);
+          tocTrack.style.setProperty('--toc-line-bottom', `${Math.max(0, tocTrack.scrollHeight - lastCenter)}px`);
+          tocFill.style.top = `${firstCenter}px`;
+          tocFill.style.height = `${fillHeight}px`;
+        };
+
+        const scheduleTocFillUpdate = (): void => {
+          if (fillUpdateFrame) return;
+
+          fillUpdateFrame = window.requestAnimationFrame(() => {
+            fillUpdateFrame = 0;
+            updateTocFill();
+          });
+        };
+
+        const keepActiveItemVisible = (item: HTMLElement): void => {
+          item.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+          scheduleTocFillUpdate();
+        };
+
+        const setActiveTocItem = (idx: number): void => {
+          if (idx < 0 || idx >= tocItems.length) return;
+
+          tocItems.forEach((item) => {
+            const isActive = Number(item.dataset.i) === idx;
+            item.classList.toggle('article-detail__toc-item--active', isActive);
+
+            if (isActive) {
+              item.setAttribute('aria-current', 'true');
+            } else {
+              item.removeAttribute('aria-current');
+            }
+          });
+
+          const activeItem = tocItems[idx];
+          if (activeItem) {
+            const activeChanged = activeTocIndex !== idx;
+            activeTocIndex = idx;
+
+            if (activeChanged) {
+              keepActiveItemVisible(activeItem);
+            } else {
+              scheduleTocFillUpdate();
+            }
+          }
+        };
+
+        const updateActiveFromScroll = (): void => {
+          const offset = Math.min(window.innerHeight * 0.35, 280);
+          const isNearBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+          if (isNearBottom) {
+            setActiveTocItem(headingArray.length - 1);
+            return;
+          }
+
+          const currentIndex = headingArray.reduce((activeIndex, heading, index) => {
+            return heading.getBoundingClientRect().top <= offset ? index : activeIndex;
+          }, 0);
+
+          setActiveTocItem(currentIndex);
+        };
+
+        const scheduleActiveUpdate = (): void => {
+          if (activeUpdateFrame) return;
+
+          activeUpdateFrame = window.requestAnimationFrame(() => {
+            activeUpdateFrame = 0;
+            updateActiveFromScroll();
+          });
+        };
+
+        const observer = new IntersectionObserver(
+          () => scheduleActiveUpdate(),
+          { rootMargin: '-30% 0px -60% 0px', threshold: [0, 0.1] },
+        );
+
+        headings.forEach((h) => observer.observe(h));
+        updateActiveFromScroll();
+        window.addEventListener('scroll', scheduleActiveUpdate, { passive: true });
+        window.addEventListener('resize', () => {
+          scheduleActiveUpdate();
+          scheduleTocFillUpdate();
+        }, { passive: true });
+        window.addEventListener('load', () => {
+          scheduleActiveUpdate();
+          scheduleTocFillUpdate();
+        }, { once: true });
+        tocTrack.addEventListener('scroll', scheduleTocFillUpdate, { passive: true });
+        const resizeObserver = new ResizeObserver(() => {
+          scheduleActiveUpdate();
+          scheduleTocFillUpdate();
+        });
+        resizeObserver.observe(body);
+        resizeObserver.observe(tocTrack);
+
+        // Click-to-scroll
+        tocItems.forEach((item) => {
+          item.addEventListener('click', () => {
+            const idx = parseInt(item.getAttribute('data-i') || '0', 10);
+            const target = headingArray[idx];
+            if (target) {
+              setActiveTocItem(idx);
+              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              window.setTimeout(scheduleTocFillUpdate, 350);
+            }
+          });
+          item.addEventListener('keydown', (event) => {
+            if (event.key !== 'Enter' && event.key !== ' ') return;
+
+            event.preventDefault();
+            item.click();
+          });
+        });
+      }
+
+      // --- Callout detection ---
+      const blockquotes = body.querySelectorAll('blockquote');
+      blockquotes.forEach((bq) => {
+        const firstP = bq.querySelector('p');
+        if (!firstP) return;
+
+        const text = firstP.textContent?.trim() || '';
+        const strong = firstP.querySelector('strong');
+
+        if (strong && text.startsWith('Вопросы управленцу')) {
+          bq.setAttribute('data-callout', 'question');
+        } else if (strong && firstP.childNodes.length <= 3 && strong.textContent?.trim() === text) {
+          bq.setAttribute('data-callout', 'key');
+        } else {
+          bq.setAttribute('data-callout', 'insight');
+        }
+      });
+
+      // --- Table scroll wrapper ---
+      const tables = body.querySelectorAll('table');
+      tables.forEach((table) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'article-detail__table-scroll';
+        table.parentNode?.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+      });
+    }
+
+    initArticlePage();
+  </script>
+
   <style>
+    /* ─── Layout ─── */
     .article-detail {
       max-width: 720px;
       margin: 0 auto;
       padding: var(--space-8) var(--space-4);
     }
 
+    .article-detail__layout {
+      display: flex;
+      gap: 0;
+    }
+
+    .article-detail__main {
+      flex: 1;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .article-detail__toc {
+      display: none;
+    }
+
+    @media (min-width: 1024px) {
+      .article-detail {
+        max-width: 1020px;
+      }
+
+      .article-detail__layout {
+        align-items: flex-start;
+        gap: var(--space-8);
+        justify-content: center;
+      }
+
+      .article-detail__main {
+        max-width: 720px;
+      }
+
+      .article-detail__toc {
+        display: none;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .article-detail {
+        max-width: 1120px;
+      }
+
+      .article-detail__toc {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        flex: 0 0 300px;
+        position: sticky;
+        top: 60px;
+        z-index: 20;
+        width: 300px;
+        max-height: calc(100vh - 120px);
+        min-height: 0;
+        overflow: hidden;
+      }
+    }
+
+    /* ─── Back link ─── */
     .article-detail__back {
       display: inline-flex;
       align-items: center;
@@ -213,6 +506,7 @@ const jsonLd = {
       opacity: 1;
     }
 
+    /* ─── Header ─── */
     .article-detail__header {
       margin-bottom: var(--space-8);
     }
@@ -257,7 +551,7 @@ const jsonLd = {
       display: flex;
       flex-wrap: wrap;
       gap: var(--space-2);
-      margin-bottom: var(--space-5);
+      margin-bottom: 1.25rem;
     }
 
     .article-detail__source-link {
@@ -284,12 +578,14 @@ const jsonLd = {
       opacity: 1;
     }
 
+    /* ─── Body: base ─── */
     .article-detail__body {
       color: var(--color-text-muted);
       font-size: var(--text-base);
       line-height: 1.8;
     }
 
+    /* ─── Body: headings ─── */
     .article-detail__body :global(h2) {
       color: var(--color-text);
       font-family: var(--font-display);
@@ -297,41 +593,70 @@ const jsonLd = {
       font-weight: 700;
       letter-spacing: -0.01em;
       line-height: 1.25;
-      margin: var(--space-8) 0 var(--space-4);
+      margin: var(--space-12) 0 var(--space-4);
+      padding-top: var(--space-4);
+      scroll-margin-top: 5rem;
+      border-top: 1px solid var(--color-border);
     }
 
-    .article-detail__body :global(h3),
-    .article-detail__body :global(h4) {
+    .article-detail__body :global(h3) {
       color: var(--color-text);
       font-family: var(--font-display);
+      font-size: var(--text-xl);
       font-weight: 700;
       letter-spacing: -0.01em;
       line-height: 1.3;
       margin: var(--space-6) 0 var(--space-3);
-    }
-
-    .article-detail__body :global(h3) {
-      font-size: var(--text-xl);
+      scroll-margin-top: 5rem;
+      padding-left: var(--space-3);
+      border-left: 2px solid var(--color-accent);
     }
 
     .article-detail__body :global(h4) {
+      color: var(--color-text);
+      font-family: var(--font-display);
       font-size: var(--text-lg);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      margin: var(--space-6) 0 var(--space-3);
+      scroll-margin-top: 5rem;
     }
 
+    /* ─── Body: prose elements ─── */
     .article-detail__body :global(p),
     .article-detail__body :global(ul),
-    .article-detail__body :global(ol),
-    .article-detail__body :global(blockquote),
-    .article-detail__body :global(hr),
-    .article-detail__body :global(table),
-    .article-detail__body :global(figure),
+    .article-detail__body :global(ol) {
+      margin-bottom: 1.25rem;
+    }
+
+    .article-detail__body :global(blockquote) {
+      margin-bottom: var(--space-8);
+      margin-top: var(--space-6);
+    }
+
+    .article-detail__body :global(table) {
+      margin-bottom: 0;
+    }
+
+    .article-detail__body :global(hr) {
+      margin-bottom: var(--space-12);
+      margin-top: var(--space-12);
+    }
+
+    .article-detail__body :global(figure) {
+      margin-bottom: var(--space-8);
+      margin-top: var(--space-6);
+    }
+
     .article-detail__body :global(pre) {
-      margin-bottom: var(--space-5);
+      margin-bottom: var(--space-8);
+      margin-top: var(--space-4);
     }
 
     .article-detail__body :global(ul),
     .article-detail__body :global(ol) {
-      padding-left: var(--space-5);
+      padding-left: 2rem;
     }
 
     .article-detail__body :global(ol) {
@@ -339,7 +664,13 @@ const jsonLd = {
     }
 
     .article-detail__body :global(li) {
-      margin-bottom: var(--space-2);
+      margin-bottom: var(--space-3);
+      padding-left: var(--space-1);
+    }
+
+    .article-detail__body :global(li::marker) {
+      color: var(--color-accent);
+      font-weight: 700;
     }
 
     .article-detail__body :global(strong) {
@@ -351,24 +682,86 @@ const jsonLd = {
       color: var(--color-text);
     }
 
+    /* ─── Body: blockquotes (callout variants) ─── */
     .article-detail__body :global(blockquote) {
       background: var(--color-surface);
       border-left: var(--space-1) solid var(--color-accent);
       border-radius: var(--radius-md);
       color: var(--color-text);
-      padding: var(--space-4) var(--space-5);
+      margin-left: 0;
+      margin-right: 0;
+      padding: 1.25rem var(--space-6);
+      transition: background var(--duration-fast) var(--ease-out);
+    }
+
+    .article-detail__body :global(blockquote p),
+    .article-detail__body :global(blockquote ul),
+    .article-detail__body :global(blockquote ol) {
+      max-width: 100%;
+    }
+
+    .article-detail__body :global(blockquote ul),
+    .article-detail__body :global(blockquote ol) {
+      margin-top: var(--space-3);
+      padding-left: var(--space-6);
+    }
+
+    .article-detail__body :global(blockquote li) {
+      margin-bottom: var(--space-2);
+      padding-left: var(--space-1);
+    }
+
+    .article-detail__body :global(blockquote li:last-child) {
+      margin-bottom: 0;
+    }
+
+    .article-detail__body :global(blockquote[data-callout="key"]) {
+      background: var(--color-surface);
+      border-left-color: var(--color-accent);
+    }
+
+    .article-detail__body :global(blockquote[data-callout="question"]) {
+      background: var(--color-accent-glow);
+      border-left-color: oklch(70% 0.15 80);
+    }
+
+    .article-detail__body :global(blockquote[data-callout="insight"]) {
+      background: var(--color-surface-2);
+      border-left-color: oklch(60% 0.1 260);
     }
 
     .article-detail__body :global(blockquote p:last-child) {
       margin-bottom: 0;
     }
 
-    .article-detail__body :global(hr) {
-      border: 0;
-      border-top: 1px solid var(--color-border);
-      margin-top: var(--space-8);
+    .article-detail__body :global(blockquote ul:last-child),
+    .article-detail__body :global(blockquote ol:last-child) {
+      margin-bottom: 0;
     }
 
+    /* ─── Body: hr (chapter divider) ─── */
+    .article-detail__body :global(hr) {
+      border: none;
+      margin: var(--space-12) 0;
+      text-align: center;
+      position: relative;
+      height: 1px;
+      background: var(--color-border);
+    }
+
+    .article-detail__body :global(hr::after) {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 7px;
+      height: 7px;
+      background: var(--color-accent);
+      border-radius: 50%;
+    }
+
+    /* ─── Body: images ─── */
     .article-detail__body :global(img) {
       background: var(--color-surface);
       border: 1px solid var(--color-border);
@@ -399,11 +792,19 @@ const jsonLd = {
       text-align: center;
     }
 
+    /* ─── Body: tables ─── */
+    .article-detail__table-scroll {
+      overflow-x: auto;
+      margin-bottom: 1.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background-attachment: scroll, scroll;
+    }
+
     .article-detail__body :global(table) {
       border-collapse: collapse;
       display: block;
       font-size: var(--text-sm);
-      overflow-x: auto;
       width: 100%;
     }
 
@@ -425,6 +826,15 @@ const jsonLd = {
       color: var(--color-text-muted);
     }
 
+    .article-detail__body :global(tbody tr:nth-child(even)) {
+      background: var(--color-surface);
+    }
+
+    .article-detail__body :global(tbody tr:nth-child(even) td) {
+      background: var(--color-surface);
+    }
+
+    /* ─── Body: links ─── */
     .article-detail__body :global(a) {
       color: var(--color-accent);
       text-decoration: none;
@@ -434,6 +844,7 @@ const jsonLd = {
       opacity: 0.8;
     }
 
+    /* ─── Body: code ─── */
     .article-detail__body :global(code) {
       background: var(--color-surface-2);
       border: 1px solid var(--color-border);
@@ -463,15 +874,16 @@ const jsonLd = {
       white-space: pre;
     }
 
+    /* ─── Attachments ─── */
     .article-detail__links {
       display: flex;
       flex-wrap: wrap;
       gap: var(--space-3);
-      margin-bottom: var(--space-5);
+      margin-bottom: 1.25rem;
     }
 
     .article-detail__attachments {
-      margin-bottom: var(--space-5);
+      margin-bottom: 1.25rem;
       padding: var(--space-4);
       background: var(--color-surface);
       border: 1px solid var(--color-border);
@@ -498,7 +910,7 @@ const jsonLd = {
       display: inline-flex;
       align-items: center;
       gap: var(--space-2);
-      padding: var(--space-3) var(--space-5);
+      padding: var(--space-3) 1.25rem;
       background: var(--color-surface);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-md);
@@ -529,6 +941,192 @@ const jsonLd = {
       text-transform: uppercase;
     }
 
+    /* ─── TOC sidebar (nav-rail dot-track) ─── */
+    .article-detail__toc-title {
+      color: var(--color-text);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      margin-bottom: var(--space-3);
+      padding-right: 0;
+      text-align: right;
+      text-transform: uppercase;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .article-detail__toc-track {
+      --toc-dot-size: 8px;
+      --toc-dot-column: 18px;
+      --toc-axis-right: calc(var(--toc-dot-column) / 2);
+      --toc-line-top: 0px;
+      --toc-line-bottom: 0px;
+      position: relative;
+      width: 100%;
+      max-height: calc(100vh - 120px - var(--space-6));
+      min-height: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: var(--space-1) 0;
+      scrollbar-width: thin;
+      scrollbar-color: color-mix(in oklch, var(--color-border) 70%, transparent) transparent;
+    }
+
+    .article-detail__toc-track::before {
+      content: '';
+      position: absolute;
+      top: var(--toc-line-top);
+      right: var(--toc-axis-right);
+      bottom: var(--toc-line-bottom);
+      width: 2px;
+      background: color-mix(in oklch, var(--color-border) 75%, transparent);
+      border-radius: 1px;
+      transform: translateX(50%);
+      z-index: 0;
+    }
+
+    .article-detail__toc-track::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .article-detail__toc-track::-webkit-scrollbar-thumb {
+      background: color-mix(in oklch, var(--color-border) 70%, transparent);
+      border-radius: var(--radius-sm);
+    }
+
+    .article-detail__toc-track::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .article-detail__toc-fill {
+      position: absolute;
+      right: var(--toc-axis-right);
+      top: 0;
+      width: 2px;
+      height: 0;
+      background: var(--color-accent);
+      border-radius: 1px;
+      transform: translateX(50%);
+      transition:
+        height var(--duration-normal) var(--ease-out),
+        top var(--duration-normal) var(--ease-out);
+      z-index: 0;
+    }
+
+    .article-detail__toc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      position: relative;
+      width: 100%;
+      z-index: 1;
+    }
+
+    .article-detail__toc-item {
+      align-items: center;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) var(--toc-dot-column);
+      gap: var(--space-2);
+      position: relative;
+      min-height: 34px;
+      padding: var(--space-1) 0;
+      cursor: pointer;
+      border-radius: var(--radius-md);
+      transition: background var(--duration-fast) var(--ease-out);
+    }
+
+    .article-detail__toc-label {
+      color: var(--color-text-muted);
+      display: -webkit-box;
+      font-size: 0.78rem;
+      font-weight: 500;
+      line-height: 1.38;
+      text-align: right;
+      max-width: 100%;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      white-space: normal;
+      opacity: 0.64;
+      transition:
+        color var(--duration-fast) var(--ease-out),
+        font-weight var(--duration-fast) var(--ease-out),
+        opacity var(--duration-fast) var(--ease-out),
+        transform var(--duration-fast) var(--ease-out);
+    }
+
+    .article-detail__toc-dot {
+      align-self: center;
+      background: var(--color-bg);
+      border: 1px solid var(--color-text-muted);
+      border-radius: 999px;
+      display: block;
+      justify-self: center;
+      position: relative;
+      width: var(--toc-dot-size);
+      height: var(--toc-dot-size);
+      flex-shrink: 0;
+      z-index: 2;
+      transition:
+        background var(--duration-fast) var(--ease-out),
+        border-color var(--duration-fast) var(--ease-out),
+        box-shadow var(--duration-fast) var(--ease-out),
+        height var(--duration-fast) var(--ease-out),
+        width var(--duration-fast) var(--ease-out);
+    }
+
+    .article-detail__toc-dot::before {
+      content: '';
+      position: absolute;
+      inset: -18px;
+    }
+
+    .article-detail__toc-item:hover .article-detail__toc-label {
+      color: var(--color-text);
+      opacity: 0.9;
+      transform: translateX(-2px);
+    }
+
+    .article-detail__toc-item:hover .article-detail__toc-dot {
+      border-color: var(--color-text);
+    }
+
+    .article-detail__toc-item--active {
+      background: color-mix(in oklch, var(--color-accent-dim) 45%, transparent);
+    }
+
+    .article-detail__toc-item--active .article-detail__toc-label {
+      color: var(--color-accent);
+      font-weight: 700;
+      opacity: 1;
+      transform: translateX(-2px);
+    }
+
+    .article-detail__toc-item--active .article-detail__toc-dot {
+      border-color: var(--color-accent);
+      background: var(--color-accent);
+      box-shadow: 0 0 10px var(--color-accent-glow);
+      height: 10px;
+      width: 10px;
+    }
+
+    .article-detail__toc-item:focus-visible {
+      outline: 2px solid var(--color-accent);
+      outline-offset: 3px;
+    }
+
+    /* ─── Responsive: tablet ─── */
+    @media (max-width: 1023px) {
+      .article-detail__toc {
+        display: none;
+      }
+    }
+
     @media (max-width: 768px) {
       .article-detail {
         padding: var(--space-6) var(--space-4);
@@ -539,16 +1137,27 @@ const jsonLd = {
       }
 
       .article-detail__body :global(h2) {
-        margin-top: var(--space-6);
+        margin-top: var(--space-8);
+        padding-top: var(--space-3);
       }
 
       .article-detail__body :global(h3),
       .article-detail__body :global(h4) {
-        margin-top: var(--space-5);
+        margin-top: 1.25rem;
       }
 
       .article-detail__body :global(blockquote) {
-        padding: var(--space-3) var(--space-4);
+        padding: var(--space-4);
+      }
+
+      .article-detail__body :global(ul),
+      .article-detail__body :global(ol) {
+        padding-left: var(--space-6);
+      }
+
+      .article-detail__body :global(blockquote ul),
+      .article-detail__body :global(blockquote ol) {
+        padding-left: 1.25rem;
       }
 
       .article-detail__body :global(img) {
@@ -557,10 +1166,11 @@ const jsonLd = {
       }
 
       .article-detail__body :global(p:has(> img:only-child)) {
-        margin: var(--space-5) 0;
+        margin: 1.25rem 0;
       }
     }
 
+    /* ─── Responsive: mobile ─── */
     @media (max-width: 480px) {
       .article-detail__body :global(img) {
         border-radius: var(--radius-md);
@@ -570,6 +1180,11 @@ const jsonLd = {
 
       .article-detail__body :global(p:has(> img:only-child)) {
         margin: var(--space-4) 0;
+      }
+
+      .article-detail__body :global(h2) {
+        margin-top: var(--space-6);
+        padding-top: var(--space-2);
       }
     }
   </style>
