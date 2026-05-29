@@ -16,8 +16,20 @@ const { lang, project } = Astro.props;
 const t = getTranslations(lang);
 const localePrefix = getLocalePrefix(lang);
 const content = getLocalizedContent(project.data, lang);
-const { title, description, summary, features } = content;
-const { technologies, githubUrl, stars } = project.data;
+const {
+  title,
+  description,
+  summary,
+  demonstrates,
+  features,
+  problem,
+  architecture,
+  decisions,
+  tradeoffs,
+  role,
+  futureImprovements,
+} = content;
+const { technologies, githubUrl, demoUrl, docsUrl, stars } = project.data;
 
 const pageTitle = `${title} — Mark Gurianov`;
 const pageDescription = summary || description;
@@ -44,7 +56,7 @@ const jsonLd = {
 
 <Base title={pageTitle} description={pageDescription} lang={lang}>
   <section class="project-detail container">
-    <a href={`/${lang === 'ru' ? 'ru/' : ''}#projects`} class="project-detail__back">{t('projects.back')}</a>
+    <a href={`${localePrefix}/projects/`} class="project-detail__back">{t('projects.back')}</a>
 
     <header class="project-detail__header">
       <h1 class="project-detail__title">{title}</h1>
@@ -53,7 +65,17 @@ const jsonLd = {
       <div class="project-detail__meta">
         {githubUrl && (
           <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="project-detail__github">
-            {t('projects.github')} ↗
+            {t('project.viewGithub')} ↗
+          </a>
+        )}
+        {demoUrl && (
+          <a href={demoUrl} target="_blank" rel="noopener noreferrer" class="project-detail__github">
+            {t('project.liveDemo')} ↗
+          </a>
+        )}
+        {docsUrl && (
+          <a href={docsUrl} target="_blank" rel="noopener noreferrer" class="project-detail__github">
+            {t('project.docs')} ↗
           </a>
         )}
         {stars != null && (
@@ -61,6 +83,18 @@ const jsonLd = {
         )}
       </div>
     </header>
+
+    {(summary || demonstrates) && (
+      <section class="project-detail__section project-detail__section--brief">
+        <h2 class="project-detail__section-title">{t('project.brief')}</h2>
+        {summary && <p class="project-detail__text">{summary}</p>}
+        {demonstrates && (
+          <p class="project-detail__demonstrates">
+            <span>{t('featuredProjects.demonstrates')}:</span> {demonstrates}
+          </p>
+        )}
+      </section>
+    )}
 
     {features && features.length > 0 && (
       <section class="project-detail__section">
@@ -73,14 +107,72 @@ const jsonLd = {
       </section>
     )}
 
+    {problem && (
+      <section class="project-detail__section">
+        <h2 class="project-detail__section-title">{t('project.problem')}</h2>
+        <p class="project-detail__text">{problem}</p>
+      </section>
+    )}
+
+    {architecture && (
+      <section class="project-detail__section">
+        <h2 class="project-detail__section-title">{t('project.architecture')}</h2>
+        <p class="project-detail__text">{architecture}</p>
+      </section>
+    )}
+
+    {decisions && decisions.length > 0 && (
+      <section class="project-detail__section">
+        <h2 class="project-detail__section-title">{t('project.keyDecisions')}</h2>
+        <ul class="project-detail__features">
+          {decisions.map(decision => (
+            <li>{decision}</li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {tradeoffs && tradeoffs.length > 0 && (
+      <section class="project-detail__section">
+        <h2 class="project-detail__section-title">{t('project.tradeoffs')}</h2>
+        <ul class="project-detail__features">
+          {tradeoffs.map(tradeoff => (
+            <li>{tradeoff}</li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {role && role.length > 0 && (
+      <section class="project-detail__section">
+        <h2 class="project-detail__section-title">{t('project.role')}</h2>
+        <ul class="project-detail__features">
+          {role.map(item => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </section>
+    )}
+
     <section class="project-detail__section">
-      <h2 class="project-detail__section-title">{t('projects.technologies')}</h2>
+      <h2 class="project-detail__section-title">{t('project.techStack')}</h2>
       <div class="project-detail__tags">
         {technologies.map(tech => (
           <Tag label={tech} />
         ))}
       </div>
     </section>
+
+    {futureImprovements && futureImprovements.length > 0 && (
+      <section class="project-detail__section">
+        <h2 class="project-detail__section-title">{t('project.futureImprovements')}</h2>
+        <ul class="project-detail__features">
+          {futureImprovements.map(item => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </section>
+    )}
 
     {bodyRuParagraphs.length > 0 ? (
       <div class="project-detail__body">
@@ -179,6 +271,13 @@ const jsonLd = {
       margin-bottom: var(--space-6);
     }
 
+    .project-detail__section--brief {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+
     .project-detail__section-title {
       font-family: var(--font-display);
       font-size: var(--text-xl);
@@ -216,6 +315,25 @@ const jsonLd = {
       display: flex;
       flex-wrap: wrap;
       gap: var(--space-2);
+    }
+
+    .project-detail__text,
+    .project-detail__demonstrates {
+      color: var(--color-text-muted);
+      line-height: 1.7;
+    }
+
+    .project-detail__demonstrates {
+      margin-top: var(--space-3);
+    }
+
+    .project-detail__demonstrates span {
+      color: var(--color-accent);
+      font-family: var(--font-mono);
+      font-size: var(--text-xs);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     .project-detail__body {
