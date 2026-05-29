@@ -14,6 +14,32 @@ summary: "Spring Boot microservices demo for tenant isolation patterns"
 summaryRu: "Демо микросервисов Spring Boot с паттернами tenant isolation"
 demonstrates: "Multi-tenancy trade-offs, service boundaries, tenant isolation"
 demonstratesRu: "Компромиссы мультитенантности, границы сервисов, изоляция tenant"
+problem: "Compare tenant isolation strategies in a microservice system where each service has different data ownership constraints."
+problemRu: "Сравнить стратегии tenant isolation в микросервисной системе, где у каждого сервиса разные ограничения владения данными."
+architecture: "Four Spring Boot services model employee, organization, device, and tenant registry boundaries. PostgreSQL demonstrates database-per-tenant, schema-per-tenant, and tenant-column isolation, with Consul and Docker Compose for local service discovery and infrastructure."
+architectureRu: "Четыре Spring Boot сервиса моделируют границы employee, organization, device и tenant registry. PostgreSQL показывает изоляцию через database-per-tenant, schema-per-tenant и tenant-column, а Consul и Docker Compose отвечают за локальный service discovery и инфраструктуру."
+decisions:
+  - "Keep isolation strategies in separate services to make trade-offs visible and comparable."
+  - "Use tenant headers and service boundaries instead of hiding multi-tenancy in one shared abstraction."
+decisionsRu:
+  - "Разнести стратегии изоляции по разным сервисам, чтобы trade-offs были видимыми и сравнимыми."
+  - "Использовать tenant headers и service boundaries, а не прятать мультитенантность в одной общей абстракции."
+tradeoffs:
+  - "Database-per-tenant improves isolation but increases operational overhead."
+  - "Tenant-column storage is simpler to operate but demands stricter query discipline."
+tradeoffsRu:
+  - "Database-per-tenant усиливает изоляцию, но увеличивает operational overhead."
+  - "Tenant-column storage проще в эксплуатации, но требует строгой дисциплины запросов."
+role:
+  - "Designed the service boundaries, tenant isolation examples, local infrastructure, and validation flow."
+roleRu:
+  - "Спроектировал service boundaries, примеры tenant isolation, локальную инфраструктуру и validation flow."
+futureImprovements:
+  - "Add centralized observability for tenant-aware request tracing."
+  - "Add security tests for tenant boundary violations."
+futureImprovementsRu:
+  - "Добавить centralized observability для tenant-aware request tracing."
+  - "Добавить security tests на нарушения tenant boundaries."
 features:
   - "Compares database-per-tenant, schema-per-tenant, and tenant-column isolation models"
   - "Splits employee, organization, device, and tenant registry responsibilities into separate services"
