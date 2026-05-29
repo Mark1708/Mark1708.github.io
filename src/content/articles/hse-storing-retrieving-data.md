@@ -18,169 +18,1225 @@ files:
     labelRu: "Презентация (PPTX, 12 МБ)"
     format: PPTX
 bodyEn: |
-  ## Overview
+  Last year I gave an online lecture at HSE University on **“Storing and Retrieving Data”**. It was my first experience of this kind, and the audience was unusual for me: not fellow developers, architects or data engineers, but leaders from different functions in large companies.
 
-  This lecture introduces data as a business asset rather than a purely technical concern.
-  It is aimed at managers, analysts and product leaders who need to speak the same language as engineers and architects.
-  The central question is simple: how do companies store, retrieve, integrate and use data so that it supports decisions instead of becoming passive digital waste?
+  These are people who make decisions every day. They are responsible for processes, budgets, teams, metrics, risks and business growth, but they are not expected to know how to write SQL queries, configure database sharding or design distributed storage.
 
-  The lecture starts with the idea often summarized as “data is the new oil”.
-  Reports, BI dashboards and occasional AI experiments are not enough if the organization does not understand ownership, quality, context and responsibility for data.
-  Data needs owners, standards and business goals.
-  Without them, even expensive systems turn into isolated repositories with inconsistent metrics.
+  That is why the goal was not to turn managers into engineers in three hours. That would be impossible, and it is not needed.
 
-  ## Why managers need data literacy
+  The goal was different: to explain **how the world of data works at a level that is enough for a meaningful management conversation**.
 
-  A manager does not have to become a database engineer.
-  But they do need to understand how data appears, where it is stored, how it moves between systems and why different tools exist.
-  This knowledge helps them ask better questions, define useful metrics, identify missing data and avoid treating every data problem as an IT-only responsibility.
+  Not at the level of “oh, this is all IT, let them deal with it”.
+  And not at the level of “let's urgently implement AI because everyone else is doing it”.
+  Somewhere in the middle: so a leader understands what data the company has, where it comes from, where it flows, why reports disagree, why storage layers are needed, why one database does not solve every problem, and why artificial intelligence without proper data becomes an expensive toy.
 
-  The key management shift is from “IT stores data for us” to “business domains own data products”.
-  IT provides platforms and infrastructure, while business teams define meaning, quality expectations and decision-making value.
+  This article is an expanded companion to that lecture.
 
-  ## Common barriers
+  > **Who this article is for**: managers, analysts and product leaders who want to speak the same language as engineers and architects. You do not need to know SQL. It is enough to understand what data exists, where it comes from and why it matters for the business.
 
-  Organizations often underestimate the value of data because of several myths:
+  ### In short
 
-  - “It is too complex and expensive.” In practice, progress can start with an inventory of existing data, cleaning reference books and automating a few high-value reports.
-  - “It is an IT task.” IT can build pipelines and storage, but the business knows what should be collected and how metrics should be interpreted.
-  - “We already have everything.” Dashboards may exist while metrics are still calculated differently in each department.
-  - “We just need to collect everything.” Without governance, large storage becomes a data swamp.
-  - “We are not an IT company.” Forecasting, logistics, service quality and compliance all depend on data even in traditional industries.
+  - **Data is an asset**, not a by-product. Without owners, standards and quality, it turns into noise.
+  - **There is no universal database.** SQL, NoSQL, column-oriented, graph and vector databases each solve a different class of problems.
+  - **OLTP and OLAP should be separated.** A cash register and an analytics department are different things, and their databases often should be different too.
+  - **Architecture matters more than the tool.** The path from source to decision is what defines value.
+  - **AI starts with data.** Without clean data, catalogs and access control, an LLM only accelerates chaos.
+  - **Import substitution is a strategic project**, not a one-time purchase. It requires workload, compatibility and risk analysis.
 
-  ## Historical evolution
+  ---
 
-  The lecture traces the evolution of data storage from relational theory to AI-era architectures.
-  In the 1970s, Edgar Codd’s relational model introduced a rigorous way to organize data in tables.
-  The 1980s brought commercial SQL systems such as Oracle and DB2.
-  The 1990s added the internet, OLAP and data warehousing.
+  ## Data is an asset, not infrastructure
+  ![Slide: Data as an asset](/images/articles/hse-storing-retrieving-data/slide-05.png)
 
-  In the 2000s, web-scale companies exposed the limits of traditional relational databases.
-  Google, Amazon and Facebook pushed distributed storage, MapReduce, BigTable, Dynamo-style systems and eventually the NoSQL movement.
-  From 2013 onward, cloud-native data platforms, managed services, Spark, Kafka, Airflow and Kubernetes reshaped the modern data stack.
-  Since 2019, Data Lakehouse architectures and AI workloads have increased demand for real-time analytics and vector databases.
+  Let's start with a phrase almost everyone has heard:
 
-  ## Data types
+  > Data is the new oil.
+  > In Russian: data is the new oil.
 
-  The lecture distinguishes three major data classes.
+  The phrase is usually attributed to Clive Humby. It has been repeated so often that it has become a little tired. But the problem is not the phrase itself. The problem is that many companies say it out loud while still treating data as something secondary.
 
-  Structured data has a fixed schema: tables, rows, columns and typed values.
-  It is the foundation of accounting, CRM records, orders, finance, logistics, BI and operational reporting.
-  Its strength is predictability and validation.
+  As a by-product of systems doing their work.
 
-  Semi-structured data has internal logic but not a rigid table structure.
-  Examples include JSON, XML, YAML, logs and event payloads.
-  It is common in APIs, SaaS integrations, IoT messages and event-driven systems.
-  It provides flexibility without losing machine readability.
+  - Somewhere in the CRM, there are customers.
+  - Somewhere in the ERP, there are purchases and inventory.
+  - Somewhere in the accounting system, there is finance.
+  - Somewhere in Excel, there is “the most correct version of the report”.
+  - Somewhere in email, there are agreements.
+  - Somewhere in the head of a department leader, there is the real KPI calculation logic.
 
-  Unstructured data includes documents, text, images, audio, video, scans, presentations and conversations.
-  It is harder to process, but it often contains the richest business context: complaints, contracts, internal knowledge and customer feedback.
-  Modern OCR, NLP, embeddings and LLM-based tools make this category increasingly valuable.
+  Formally, the data exists. In practice, no one manages it.
 
-  ## Data sources and integration
+  This is where we need to fix one simple idea:
 
-  Data comes from internal and external sources.
-  Internal sources include CRM, ERP, accounting systems, HR platforms, project trackers, sensors, equipment and product events.
-  External sources include payment providers, open datasets, partner APIs, traffic analytics, market data and public registers.
+  > **Data has no value by itself if no one can work with it.**
 
-  Sources also differ by arrival pattern.
-  Online sources produce real-time events such as clicks, telemetry or transactions.
-  Offline sources provide periodic batches such as nightly exports or weekly reports.
-  This distinction affects architecture: batch-oriented pipelines and real-time streams solve different problems.
+  Oil is not especially useful if it simply stays underground. It has to be found, extracted, cleaned, transported, refined and turned into something useful. Data is similar.
 
-  Integration is difficult because formats, identifiers, business rules, update frequency and access rights differ across systems.
-  ETL extracts, transforms and then loads clean data.
-  ELT extracts and loads raw data first, then transforms it inside a powerful storage layer.
-  CDC captures only changes and is closer to real-time, but requires more careful setup.
+  If you only store it, it does not create business value.
 
-  ## OLTP and OLAP
+  - If it is messy, it causes harm.
+  - If it contradicts itself, people stop trusting it.
+  - If no one knows who is responsible for it, it quickly becomes digital waste.
 
-  OLTP systems handle operational transactions: orders, payments, customer registration, stock updates and other daily business events.
-  They prioritize speed, consistency and reliability.
-  They are the “cash register” or “nervous system” of the business.
+  So instead of saying “we have data”, it is better to ask less comfortable questions:
 
-  OLAP systems handle analytical workloads: historical comparison, aggregation, dashboards, forecasting and strategic analysis.
-  They prioritize complex queries over large volumes of historical data.
-  They are the “finance planning department” or “brain” of the business.
+  - Who is responsible for this data?
+  - Who understands what it means?
+  - Who monitors its quality?
+  - Who defines which data matters?
+  - Who can explain why two reports show different numbers?
+  - Who decides what data we need to start collecting now so that it is not too late in a year?
 
-  Trying to use one database for both operational transactions and heavy analytics often causes slowdowns, inconsistent reports and architectural complexity.
-  That is why modern architectures usually separate operational and analytical layers.
+  If the answer is “no one”, then the data belongs to no one.
 
-  ## DBMS types
+  The chain after that is short:
 
-  Relational SQL databases remain the default choice for well-structured data, transactional integrity and strict consistency.
-  Examples include PostgreSQL, MySQL, Oracle and Microsoft SQL Server.
+  1. If there is no owner, there is no responsibility.
+  2. If there is no responsibility, there is no quality.
+  3. If there is no quality, there is no trust.
+  4. If there is no trust, data stops being an asset.
 
-  NoSQL databases cover several specialized models:
+  It becomes noise.
 
-  - Document databases such as MongoDB store flexible JSON-like documents.
-  - Column-oriented databases such as ClickHouse and Redshift optimize analytical scans and aggregations.
-  - Key-value stores such as Redis and DynamoDB provide very fast access by key and are often used for cache, sessions and temporary state.
-  - Graph databases such as Neo4j model relationships directly and are useful for networks, routes, hierarchies and dependencies.
-  - Vector databases such as Qdrant, Milvus, Pinecone and Weaviate support similarity search over embeddings.
-  - In-memory databases such as Redis, Memcached, SAP HANA and Tarantool keep data in RAM for extremely low latency.
+  > **Questions for a manager**
+  >
+  > - Which data in your area of responsibility is considered critical?
+  > - Does every such dataset have an owner?
+  > - Who can explain report discrepancies without a manual investigation?
 
-  NewSQL systems try to preserve SQL and transactional guarantees while adding distributed scalability and high availability.
-  Examples include CockroachDB, Google Spanner, TiDB, YDB and VoltDB.
+  ---
 
-  The main conclusion is that there is no universal database.
-  Architecture is usually a combination of tools selected for concrete business workloads.
+  ## Why managers need to understand this
 
-  ## Storage architectures
+  A manager who does not understand the basics of working with data is like a driver who does not know where to get fuel, where to put it and why it is needed at all.
 
-  A Data Warehouse centralizes cleaned and structured data from many systems.
-  It provides a “single version of truth” for management reporting, BI and KPI monitoring.
-  Its drawbacks are inertia, batch latency and lower flexibility with diverse data.
+  Yet people still expect the car to move.
 
-  A Data Lake stores raw data cheaply and at scale.
-  It can contain tables, logs, JSON, images, audio and documents.
-  Its risk is becoming a data swamp if cataloging, governance and processing are missing.
+  It is important not to confuse roles. A leader does not need to become a data engineer. They do not need to write pipelines by hand, choose PostgreSQL indexes or argue about the pros and cons of Kafka.
 
-  A Data Lakehouse combines the flexibility of a lake with governance and analytical structure closer to a warehouse.
-  It reduces duplication and lets BI, analytics and ML workflows use one storage layer.
+  But they do need to understand the basic mechanics:
 
-  Data Mesh is an organizational approach: business domains own their data as products.
-  It requires common standards, discoverability, access control and accountability.
-  It works best in large organizations where centralized data teams become a bottleneck.
+  - how data appears;
+  - where it is stored;
+  - why it degrades;
+  - why reports disagree;
+  - how an operational database differs from an analytical one;
+  - why “put everything into one database” is not a strategy;
+  - what questions to ask IT, analysts and process owners.
 
-  Data Fabric creates a unified logical access layer over distributed sources.
-  It does not necessarily move all data into one place; instead, it connects existing systems through metadata, catalogs, APIs and access policies.
+  > This is not a technical luxury. It is a management necessity.
 
-  ## Russian DBMS and import substitution
+  Today almost every serious business decision depends on data in one way or another:
 
-  The lecture also covers Russian and Russia-associated alternatives across database categories.
-  For SQL workloads, examples include Postgres Pro, Jatoba, Tantor, Proxima DB, Red Database, Linter, Pangolin DB, Kvant-Hybrid, Arenadata Postgres and SoQoL.
-  For analytical and NoSQL-related workloads, examples include ClickHouse, Qdrant, Tarantool and YDB.
+  - launching a new product;
+  - optimizing inventory;
+  - measuring team performance;
+  - managing customer experience;
+  - automating a process;
+  - introducing AI;
+  - moving to domestic software;
+  - reducing operating costs;
+  - finding growth points.
 
-  The point is not to migrate blindly.
-  The point is to understand available options, certification constraints, operational risks and strategic independence requirements.
+  If the data is bad, the decisions will be bad too. They will just look convincing because they can be shown nicely on a dashboard.
+
+  > A beautiful chart does not make data correct.
+
+  ---
+
+  ## What old-style data work looks like
+
+  In companies without a systematic approach to data, the same problems usually repeat. Industries, scale and system names change, but the symptoms look very similar.
+
+  The first symptom is **inconsistent reporting**.
+
+  Finance shows one number. Sales shows another. Operations shows a third. Then come manual reconciliations, calls, Excel files, formula checks and the search for the “right version”.
+
+  The second symptom is **duplicated reference data**.
+
+  The same customer may be named differently in different systems. In one place it is “Romashka LLC”, in another “LLC Romashka”, somewhere the record is tied to a tax ID, somewhere to an internal ID, and somewhere to a manager's surname.
+
+  Until there is a shared identification logic, the company does not see the real picture. It sees a set of fragments.
+
+  The third symptom is **decisions based on guesses**.
+
+  When there is no trust in data, leaders return to intuition. Intuition matters, but it should not replace facts. Especially in a large company, where mistakes become expensive at scale.
+
+  The fourth symptom is **high cost of introducing modern solutions**.
+
+  A company wants BI, predictive analytics, personalization, an AI assistant or automatic processing of customer requests. Then it quickly turns out that data is scattered, poorly described, not cleaned, not connected and sometimes unclear from a legal point of view.
+
+  As a result, the modern solution can be introduced only after long and painful preparation. Sometimes it turns out that the company should not start with AI at all, but with cleaning up reference data.
+
+  The fifth symptom is **slow information search**.
+
+  People spend hours and days not on analysis, but on preparing data. Find a file. Check whether it is current. Ask a colleague. Verify a formula. Rebuild a table. Clarify why yesterday there was one value and today there is another.
+
+  This is the hidden cost of chaos.
+
+  ---
+
+  ## Myths that stop companies from working with data
+  ![Slide: Myths and barriers](/images/articles/hse-storing-retrieving-data/slide-07.png)
+
+  There are several persistent myths that make companies postpone proper data work for years.
+
+  ### Myth 1. “It is complex, expensive and slow”
+
+  Sometimes it is complex. Sometimes it is expensive. Sometimes it is slow.
+
+  But the mistake is that many people imagine data work as a huge project where they must immediately introduce a DWH, Data Lake, Data Mesh, machine learning, a data catalog, governance, MDM and a corporate AI assistant on top.
+
+  In practice, the start can be much simpler.
+
+  For example:
+
+  - describe the key data sources;
+  - understand which reports are assembled manually;
+  - identify critical reference data;
+  - assign data owners;
+  - automate 2 or 3 reports that consume time every day;
+  - agree on shared definitions for key metrics.
+
+  This is already data work. And it already has an effect.
+
+  ### Myth 2. “This is an IT task”
+
+  This is one of the most dangerous myths.
+
+  - IT can build infrastructure.
+  - IT can set up integrations.
+  - IT can provide storage, availability, security and performance.
+
+  - But IT does not always know what the “active customer” metric actually means.
+  - IT should not decide alone which data matters for the commercial function.
+  - IT cannot define the correct KPI calculation logic without the business.
+  - IT should not have to guess what data a leader will need in six months.
+
+  If data is an asset, the business cannot fully delegate responsibility for it to a technical function.
+
+  The right model looks different:
+
+  - the business defines meaning and value;
+  - analysts help interpret and model;
+  - IT provides the technical implementation;
+  - managers create a culture of data use.
+
+  > **Questions for a manager**
+  >
+  > - Which metrics in your function are considered key?
+  > - Who approves their definitions?
+  > - What has to be checked manually before an important decision today?
+
+  ### Myth 3. “We already have everything”
+
+  Usually this means: “We have BI”, “We have CRM”, “We have a database”, “We have reports”.
+
+  But having a tool does not mean the company is mature in working with data.
+
+  BI may be installed, while departments still calculate metrics differently.
+  CRM may be used, while managers still keep “their own spreadsheets”.
+  A DWH may exist, while no one trusts the data.
+  Reports may be automated, while their business logic is outdated.
+
+  “We already have everything” is a dangerous phrase. After it, companies often discover that they have tools, but not management.
+
+  ### Myth 4. “The main thing is to collect everything”
+
+  No.
+
+  Collecting everything is not a strategy. It is warehousing.
+
+  If you simply put all data into one place, without describing it, assigning owners, setting quality rules or defining use cases, you do not get a Data Lake. You get a data swamp.
+
+  Everything seems to be there, but nothing can be found.
+  And if you do find something, you do not know whether it can be trusted.
+
+  ### Myth 5. “We are not an IT company, so we do not need this”
+
+  Data is not needed only by banks, marketplaces and BigTech.
+
+  Manufacturing uses data for load planning and equipment maintenance.
+  Logistics uses it for routes, deadlines and warehouse inventory.
+  HR uses it to analyze turnover and hiring efficiency.
+  Legal functions use it for contracts, risks and claims.
+  Customer service uses it to analyze requests and service quality.
+
+  If a company makes decisions, serves customers, manages resources and is responsible for results, it needs data.
+
+  ### Myth 6. “Everything works fine already”
+
+  It works while the market is stable.
+  While competitors have not become faster.
+  While the regulator has not changed the requirements.
+  While the key employee with the Excel file has not gone on vacation.
+  While AI has not become necessary.
+  While no crisis has happened.
+
+  Weak data work is often invisible in calm periods. It appears at the moment of change.
+
+  ---
+
+  ## How the role of a manager is changing
+  ![Slide: How the manager's role is changing](/images/articles/hse-storing-retrieving-data/slide-08.png)
+
+  A modern manager should not be only a consumer of reports.
+
+  They should be a participant in data work.
+
+  This does not mean they must build data marts or design architecture by hand. But they should:
+
+  - understand what data exists in their area of responsibility;
+  - know where it comes from;
+  - understand how it is used;
+  - demand data as the basis for decisions;
+  - create a culture of responsibility for quality;
+  - speak the same language as IT and analysts.
+
+  A good management question today does not sound like this:
+
+  > Why don't we have a beautiful dashboard?
+
+  It sounds like this:
+
+  > Which decisions do we want to make faster and more accurately, what data do we need for that, where is it created, who is responsible for it and can we trust it?
+
+  That is the beginning of a mature approach.
+
+  ---
+
+  ## A little history: why databases became so different
+  ![Slide: Evolution of data storage 1970-1999](/images/articles/hse-storing-retrieving-data/slide-09.png)
+
+  To understand modern data architecture, it helps to look at how we got here.
+
+  | Period | What happened | Key technologies |
+  |---|---|---|
+  | 1970s | Edgar Codd proposed the relational model: tables, rows, columns and relationships | Relational theory, SQL |
+  | 1980s | Relational DBMS became the commercial standard | Oracle, IBM DB2, SQL standardization |
+  | 1990s | The internet increased scale. OLAP and data warehouses appeared | MySQL, PostgreSQL, DWH, OLAP |
+  | 2000s | Web-scale companies reached the limits of classic DBMS | MapReduce, BigTable, Dynamo |
+  | 2007-2012 | The NoSQL revolution responded to new data types and horizontal scaling | MongoDB, Cassandra, Redis, CouchDB |
+  | 2013-2018 | Clouds and managed services made storage and processing easier | Cloud-native DWH, Spark, Kafka, Airflow |
+  | 2019-2024 | Lakehouse combined Lake flexibility with Warehouse structure. AI created demand for vector DBMS | Lakehouse, vector DBMS, RAG |
+
+  The main conclusion from this history is simple:
+
+  **each new wave of technology appeared not because older technologies became bad, but because tasks changed.**
+
+  There is no single database “for everything”. There are different classes of tasks, and they need different solutions.
+
+  ---
+
+  ## Data types: not all data is the same
+  ![Slide: Data types](/images/articles/hse-storing-retrieving-data/slide-12.png)
+
+  Before we talk about databases and architectures, we need to understand the data itself.
+
+  It is common to distinguish three large types:
+
+  - structured;
+  - semi-structured;
+  - unstructured.
+
+  ### Structured data
+  ![Slide: Structured data](/images/articles/hse-storing-retrieving-data/slide-13.png)
+
+  Structured data is the most familiar format.
+
+  Imagine an Excel table:
+
+  - each row is a separate record;
+  - each column is a clear field;
+  - each field has a type: date, number, text, status, amount.
+
+  Examples:
+
+  - an orders table;
+  - a customer directory;
+  - accounting entries;
+  - warehouse balances;
+  - payments;
+  - shift schedules.
+
+  This data fits well into relational databases. It is convenient to validate, analyze, aggregate and use in reporting.
+
+  The main advantage of structured data is predictability.
+
+  If a field is called `order_date`, it is clear that it should contain the order date. If a field is called `amount`, it is expected to contain an amount. If a field is called `status`, it should contain a status from a limited set of values.
+
+  For management reporting, this is the foundation.
+
+  ### Semi-structured data
+  ![Slide: Semi-structured data](/images/articles/hse-storing-retrieving-data/slide-14.png)
+
+  Semi-structured data is no longer a strict table, but it is not complete chaos either.
+
+  Usually this means JSON, XML, YAML, events, API responses and logs.
+
+  Such data has internal structure, but it can be flexible. One object contains one set of fields, another object contains another. Nesting can change. Data can come from an external service, a mobile app, a web system or an IoT device.
+
+  Analogy: if structured data is a strict questionnaire where every field is required, semi-structured data is a questionnaire with “depends on the case” sections.
+
+  One customer has a phone and email.
+  Another has a phone, email, Telegram and order history.
+  A third has only an identifier from an external system.
+
+  Semi-structured data is very important for modern integrations. Most APIs and event-driven systems work this way.
+
+  ### Unstructured data
+  ![Slide: Unstructured data](/images/articles/hse-storing-retrieving-data/slide-15.png)
+
+  Unstructured data means texts, emails, contracts, scans, images, audio, video, presentations, customer requests and messages.
+
+  In other words, everything that does not fit into a simple table.
+
+  In the past, such data was often just stored as files. It was important for people, but poorly available for machine processing.
+
+  Today the situation has changed. With machine learning, LLMs, OCR, speech-to-text and vector search, unstructured data has become a major source of value.
+
+  For example:
+
+  - customer requests can be analyzed;
+  - similar contracts can be found;
+  - common complaint reasons can be detected;
+  - internal document search can be built;
+  - corporate assistants can be created;
+  - meaning can be extracted from messages and texts.
+
+  But there is an important nuance: unstructured data requires special processing methods. A normal table will not help here.
+
+  ---
+
+  ## Data sources: where everything comes from
+  ![Slide: Data sources](/images/articles/hse-storing-retrieving-data/slide-16.png)
+
+  Data does not appear out of thin air. It is born in processes.
+
+  There are internal sources:
+
+  - CRM;
+  - ERP;
+  - accounting systems;
+  - point-of-sale systems;
+  - warehouse accounting;
+  - HR systems;
+  - document management systems;
+  - task management systems;
+  - email;
+  - messengers;
+  - company products;
+  - internal services;
+  - industrial equipment;
+  - sensors and devices.
+
+  There are external sources:
+
+  - government registers;
+  - open data;
+  - partner systems;
+  - suppliers;
+  - logistics operators;
+  - payment services;
+  - social networks;
+  - external APIs;
+  - public datasets.
+
+  There is another important classification: online and offline.
+
+  **Online sources** provide data almost in real time: clicks, application events, transactions, telemetry.
+
+  **Offline sources** send data periodically: an accounting export once a night, a supplier report once a week, an Excel file from a partner once a month.
+
+  For the business, this is not a technical detail. The type of source determines how quickly decisions can be made.
+
+  If you manage warehouse balances, a one-day delay may be acceptable.
+  If you manage payment antifraud, a one-day delay turns the system into a museum.
+
+  > **Questions for a manager**
+  >
+  > - Which decisions in your function require same-day data?
+  > - Where is weekly or monthly frequency enough?
+  > - Which sources are currently treated as external, but actually affect daily decisions?
+
+  ---
+
+  ## Why “put everything in one place” is harder than it sounds
+
+  At the idea level, everything looks simple:
+
+  - we have data in different systems;
+  - let's collect it in one storage layer;
+  - build reports;
+  - start making decisions.
+
+  In reality, the fun begins.
+
+  ### Different formats
+
+  One system returns tables.
+  Another returns JSON.
+  A third returns XML.
+  A fourth returns PDF.
+  A fifth returns an archive of files.
+  A sixth returns an event stream.
+
+  Before data can be combined, it has to be parsed, brought into a clear form and described.
+
+  ### Different identifiers
+
+  The same customer may have different IDs in CRM, ERP and accounting. The same product may be named differently by warehouse, procurement and marketing.
+
+  Until there is a shared master data logic, the company cannot confidently say that it sees the same object.
+
+  ### Different accounting rules
+
+  In one system, the amount includes VAT.
+  In another, it excludes VAT.
+  Somewhere the date means the order creation date.
+  Somewhere it means the payment date.
+  Somewhere it means the shipment date.
+
+  Formally, the fields look similar. Semantically, they are different.
+
+  This is exactly where reports that argue with each other are born.
+
+  ### Different update frequency
+
+  CRM updates constantly.
+  The accounting system exports at night.
+  A partner sends a file once a week.
+  An external API is sometimes unavailable.
+
+  If this is ignored, analytics will show strange results. Not because the system is broken, but because data lives in different rhythms.
+
+  ### Access rights and security
+
+  Not all data can simply be taken and moved. There is personal data, trade secrets, regulatory requirements and internal security policies.
+
+  Working with data is not only about technology. It is also about responsibility.
+
+  ---
+
+  ## ETL, ELT and CDC: how data moves between systems
+  ![Slide: ETL, ELT and CDC](/images/articles/hse-storing-retrieving-data/slide-17.png)
+
+  For data from different sources to reach storage, integration is needed.
+
+  There are three approaches a manager should know: ETL, ELT and CDC.
+
+  ### ETL: Extract, Transform, Load
+
+  ETL means:
+
+  - Extract, take data from the source;
+  - Transform, convert it;
+  - Load, put it into storage.
+
+  First the data is taken from the source, then cleaned, normalized and brought to the required structure, and only after that loaded into storage.
+
+  Analogy: an accountant first collects primary documents, checks them, fixes errors, brings them to one format and only then prepares the final report.
+
+  The advantage of ETL is quality control before loading.
+  The drawback is that the process can be slow and less flexible.
+
+  ETL is well suited to classic reporting and situations where strict data preparation matters.
+
+  ### ELT: Extract, Load, Transform
+
+  ELT changes the order:
+
+  1. First we extract.
+  2. Then we load as is.
+  3. And transform later inside storage.
+
+  Analogy: we put all documents into a large archive, and then sort, clean, group and analyze them inside that archive.
+
+  ELT became especially popular with powerful cloud storage and analytical platforms. They let teams load a lot of data quickly, then process it inside the platform.
+
+  The advantage of ELT is speed and flexibility.
+  The drawback is that storage must be powerful and well managed, otherwise it becomes a mess.
+
+  ### CDC: Change Data Capture
+
+  CDC is an approach where the system tracks changes in a source and sends only what changed.
+
+  You do not need to export the whole customer table every time. It is enough to send new records, updates and deletions.
+
+  Analogy: you do not recalculate the whole family budget from zero after each purchase. You simply record the new change.
+
+  CDC is useful when data is needed almost in real time and when the source should not be overloaded with constant full exports.
+
+  | Approach | What happens first | Strength | Where it fits especially well |
+  |---|---|---|---|
+  | ETL | Data is cleaned before loading | Quality control | Classic reporting and regulated metrics |
+  | ELT | Data is loaded as is | Speed and flexibility | Cloud storage, analytical platforms, fast experiments |
+  | CDC | Only changes are sent | Near real-time behavior | Events, transactions, operational synchronization |
+
+  > The main point is not the name of the approach, but the management rhythm it supports: a monthly report, a report every morning or a reaction almost immediately.
+
+  ---
+
+  ## OLTP and OLAP: why one database is usually not enough
+  ![Slide: OLTP and OLAP](/images/articles/hse-storing-retrieving-data/slide-18.png)
+
+  When people say “database”, they often imagine one universal place where you can write operations, build reports and run analytics.
+
+  In reality, there are two different classes of tasks: OLTP and OLAP.
+
+  ### OLTP: the operational pulse of the company
+
+  OLTP means Online Transaction Processing.
+
+  These systems support daily business operations:
+
+  - create an order;
+  - process a payment;
+  - write off inventory;
+  - change a request status;
+  - register a customer;
+  - process a transaction.
+
+  OLTP systems must be fast, accurate and reliable.
+
+  Analogy: a cash register in a store. A customer scans goods, pays and receives a receipt. The system must immediately decrease stock, record payment and avoid mistakes.
+
+  If money is charged but the order is not created, that is a problem.
+  If an item is sold twice while only one unit was in stock, that is a problem.
+  If the cash register freezes because of an analytical report, that is a very bad story.
+
+  OLTP is about the current state of the business.
+
+  ### OLAP: the analytical brain of the company
+
+  OLAP means Online Analytical Processing.
+
+  These are systems for analysis:
+
+  - how sales changed by month;
+  - which regions are growing;
+  - which products are returned more often;
+  - how customers behave;
+  - which channels are more effective;
+  - where performance deviates from plan.
+
+  OLAP works with large volumes of historical data. Aggregations, comparisons, slices and trends matter here.
+
+  Analogy: if OLTP is the cash register, OLAP is the finance and analytics department that studies results over a period and helps make strategic decisions.
+
+  | Criterion | OLTP | OLAP |
+  |---|---|---|
+  | Main question | What is happening now? | Why did it happen, how did it change and what should we do next? |
+  | Load type | Short operations and frequent writes | Heavy reads, aggregations, historical selections |
+  | Typical example | Order, payment, inventory write-off | Dashboard, forecast, sales analysis |
+  | Risk of mixing | Slower working processes | Low trust in reports and jumping numbers |
+
+  ### Why you cannot simply do analytics in the working database
+
+  Technically, sometimes you can. From a management point of view, it is often risky.
+
+  If an analyst runs a heavy query against an operational database, it can slow down the system that serves customers, cash registers, orders or payments.
+
+  Also, OLTP changes constantly. While you build a report, data may update. The numbers start to “jump”.
+
+  Finally, OLTP and OLAP have different storage structure requirements.
+
+  - OLTP is optimized for writes and short operations.
+  - OLAP is optimized for reads, aggregations and large historical selections.
+
+  Trying to make one system perfect for everything is like doing a warehouse audit right at the cash register during rush hour.
+
+  > **Questions for a manager**
+  >
+  > - Which reports are currently built directly from working systems?
+  > - Are there cases where analytics interferes with operations?
+  > - Which metrics should be historical, not only current?
+
+  ---
+
+  ## DBMS types: why we ended up with a “zoo”
+  ![Slide: NoSQL DBMS types](/images/articles/hse-storing-retrieving-data/slide-21.png)
+
+  A DBMS is a database management system. The key point here is this: different database types did not appear because of fashion, but because data and tasks became different.
+
+  ### Relational DBMS
+
+  This is the classic category: PostgreSQL, MySQL, Oracle, Microsoft SQL Server.
+
+  Data is stored in tables. There are rows, columns, relationships, constraints, transactions and SQL.
+
+  A relational database is like a well-organized archive:
+
+  - every document has its place;
+  - everything is described in advance;
+  - relationships are clear;
+  - errors are controlled;
+  - access to data is predictable.
+
+  Relational DBMS are strong when:
+
+  - the data structure is known in advance;
+  - integrity matters;
+  - transactions are needed;
+  - there are related entities: customers, orders, payments, contracts.
+
+  For finance, accounting, ERP, CRM and transactional systems, SQL remains a basic and very strong choice.
+
+  ### Document DBMS
+  ![Slide: Document DBMS](/images/articles/hse-storing-retrieving-data/slide-22.png)
+
+  Document databases store data as documents, most often JSON or BSON.
+
+  Examples: MongoDB, Couchbase, Firestore.
+
+  They are convenient when an object's structure can change. For example, a customer card, user profile, settings or product catalog.
+
+  Analogy: a folder with questionnaires. One questionnaire has five fields, another has ten, a third has nested interaction history. You do not need to force everyone to be identical in advance.
+
+  Document databases provide flexibility, but they are less suitable for strict financial reporting where a rigid schema and control are needed.
+
+  ### Column-oriented DBMS
+  ![Slide: Column-oriented DBMS](/images/articles/hse-storing-retrieving-data/slide-23.png)
+
+  Column-oriented databases store data by columns, not by rows.
+
+  Examples: ClickHouse, Amazon Redshift, Apache Druid, Apache Pinot, Vertica.
+
+  This is especially useful for analytics. If you need to calculate total sales over a billion rows, the system does not have to read every whole row. It can read only the needed column, for example `amount`.
+
+  Analogy: in a huge Excel table, you work not with the whole sheet, but only with the “Amount” column.
+
+  Column-oriented databases are good for BI, reports, event analytics, logs, monitoring and product analytics.
+
+  But they are not designed for classic transactions like “create an order and reliably charge payment”.
+
+  ### Key-value stores
+  ![Slide: Key-value stores](/images/articles/hse-storing-retrieving-data/slide-24.png)
+
+  Key-value is the simplest model: there is a key and a value.
+
+  Examples: Redis, DynamoDB, Riak, RocksDB.
+
+  Analogy: a storage locker. If you know the locker number, you quickly get its contents.
+
+  Such databases are good for cache, sessions, tokens, counters, temporary data and fast operations.
+
+  But if you need complex analytics, relationships, filters and reports, that is not their job.
+
+  ### Graph DBMS
+  ![Slide: Graph DBMS](/images/articles/hse-storing-retrieving-data/slide-25.png)
+
+  Graph databases store not only objects, but also relationships between them.
+
+  Examples: Neo4j, JanusGraph, ArangoDB, Amazon Neptune.
+
+  A node is an object: a person, company, product or account.
+  An edge is a relationship: bought, knows, owns, connected, transferred money, follows.
+
+  Analogy: a metro map. Stations matter, but the routes between them matter just as much.
+
+  Graph databases are strong where relationships matter more than the objects themselves:
+
+  - social networks;
+  - recommendations;
+  - antifraud;
+  - ownership chains;
+  - routes;
+  - dependencies;
+  - hierarchies.
+
+  Where a relational database starts to suffer from many JOINs, a graph database may be the natural solution.
+
+  ### Vector DBMS
+  ![Slide: Vector DBMS](/images/articles/hse-storing-retrieving-data/slide-26.png)
+
+  Vector databases store numeric representations of objects: texts, images, audio, profiles and documents.
+
+  Examples: Qdrant, Milvus, Pinecone, Weaviate, Faiss.
+
+  Their job is to search not for exact matches, but for similarity.
+
+  Traditional search looks for words.
+  Vector search looks for meaning.
+
+  For example, the query “how to arrange a business trip” can find a document called “business travel policy”, even if that exact phrase is not in the document.
+
+  Vector databases became especially important with LLMs and RAG architectures.
+
+  ### In-memory DBMS
+  ![Slide: In-memory DBMS](/images/articles/hse-storing-retrieving-data/slide-27.png)
+
+  In-memory databases work mostly in RAM.
+
+  Examples: Redis, Memcached, Tarantool, SAP HANA.
+
+  They are needed where minimum latency matters.
+
+  Analogy: one thing is going to the archive every time for a folder. Another is keeping the needed documents right on the desk.
+
+  Such solutions are useful for cache, high-load services, real-time scenarios, fast customer profiles, telecom systems and financial systems.
+
+  ### NewSQL
+  ![Slide: NewSQL](/images/articles/hse-storing-retrieving-data/slide-28.png)
+
+  NewSQL is an attempt to keep the advantages of SQL and transactions, while adding the scalability of distributed systems.
+
+  Examples: Google Spanner, CockroachDB, TiDB, YDB.
+
+  NewSQL is needed when a classic SQL database no longer handles the scale, but the business is not ready to give up strict transactions and a clear data model.
+
+  It is like a classic car with modern internals: familiar SQL logic on the outside, distributed architecture inside.
+
+  ---
+
+  ## Data storage architectures
+
+  A DBMS type is not yet an architecture. In reality, company data lives in different systems, moves between them, gets cleaned, aggregated and used by different teams.
+
+  That is why we need to talk about storage and data management architectures.
+
+  ### Data Warehouse: a single version of truth
+  ![Slide: Data Warehouse](/images/articles/hse-storing-retrieving-data/slide-29.png)
+
+  A Data Warehouse, or DWH, is centralized data storage for analytics and reporting.
+
+  Its job is to collect data from different systems, clean it, align it and give the business a single version of truth.
+
+  Analogy: a retail chain where every store has its own cash register and its own reports. The DWH is the central office where data is brought to one form, checked and used as the basis for management reporting.
+
+  DWH advantages:
+
+  - centralization;
+  - clean data;
+  - history;
+  - shared KPIs;
+  - trust in reporting;
+  - convenient integration with BI.
+
+  Drawbacks:
+
+  - launch complexity;
+  - inertia;
+  - update delay;
+  - limited flexibility with new data types.
+
+  A DWH fits well when a company needs regular management reporting, aligned metrics and data quality control.
+
+  ### Data Lake: store everything as is
+  ![Slide: Data Lake](/images/articles/hse-storing-retrieving-data/slide-30.png)
+
+  A Data Lake is an architecture where data is stored in raw form.
+
+  It can contain tables, JSON, logs, images, documents, audio, video and events.
+
+  Analogy: if a DWH is a formal archive with catalogs, a Data Lake is a huge warehouse where everything can be stored “just in case”.
+
+  Data Lake advantages:
+
+  - flexibility;
+  - scalability;
+  - support for any formats;
+  - low storage cost;
+  - ability to keep data before it is clear how exactly it will be useful.
+
+  Drawbacks:
+
+  - without management, it turns into a swamp;
+  - it can be hard to find the needed data;
+  - there is no single version of truth;
+  - engineering discipline is required;
+  - data quality is not guaranteed.
+
+  A Data Lake is useful when there is a lot of data, it has different types and it is not clear in advance which parts will be needed.
+
+  ### Data Lakehouse: an attempt to combine order and flexibility
+  ![Slide: Data Lakehouse](/images/articles/hse-storing-retrieving-data/slide-31.png)
+
+  A Lakehouse is a hybrid of Data Lake and Data Warehouse.
+
+  The idea is to store data flexibly, as in a Data Lake, while adding structure, metadata, transactions and analytical convenience, as in a DWH.
+
+  Analogy: not just a warehouse where everything was dumped, but a modern logistics center. It can store different cargo types, but it has accounting, zones, rules, routes and a search system.
+
+  Lakehouse advantages:
+
+  - one platform;
+  - less duplication;
+  - support for BI and ML;
+  - work with different data types;
+  - faster path from data to analytics.
+
+  Drawbacks:
+
+  - the architecture is relatively new;
+  - it requires a mature team;
+  - migration can be difficult;
+  - discipline in metadata and processes is needed.
+
+  Lakehouse fits companies that have already hit the limits of DWH or Data Lake and want to combine flexibility with manageability.
+
+  ### Data Mesh: data as a product
+  ![Slide: Data Mesh](/images/articles/hse-storing-retrieving-data/slide-32.png)
+
+  Data Mesh is more of an organizational approach than a specific technology.
+
+  Its idea is that data should belong to business domains. The team that creates and understands the data should be responsible for its quality, documentation and availability.
+
+  Marketing owns marketing data.
+  Finance owns financial data.
+  Logistics owns logistics data.
+  HR owns HR data.
+
+  At the same time, everyone follows shared standards: security, access, quality, format and SLA.
+
+  Analogy: a market instead of one huge centralized warehouse. Each seller is responsible for their own goods, but the trading rules are common.
+
+  Data Mesh advantages:
+
+  - responsibility is closer to the source;
+  - fewer bottlenecks in the central team;
+  - better data quality;
+  - scalability for large organizations.
+
+  Drawbacks:
+
+  - high maturity is needed;
+  - a culture of responsibility is needed;
+  - inconsistency is a risk;
+  - standards and a self-service platform are needed.
+
+  Data Mesh fits large organizations where a centralized data team can no longer handle the number of domains and requests.
+
+  ### Data Fabric: a unified access fabric
+  ![Slide: Data Fabric](/images/articles/hse-storing-retrieving-data/slide-33.png)
+
+  Data Fabric is an approach where a unified logical data access layer is created, even if the data is physically stored in different places.
+
+  Analogy: a smart city. Districts are different and systems are different, but there is a shared transport, information and control infrastructure.
+
+  Data Fabric does not necessarily move all data into one place. It connects sources, catalogs, access policies, metadata and processing tools.
+
+  Advantages:
+
+  - unified access;
+  - less duplication;
+  - automation;
+  - work with distributed sources;
+  - useful for hybrid and multi-cloud environments.
+
+  Drawbacks:
+
+  - complexity;
+  - high cost;
+  - dependency on tools;
+  - it does not solve data quality by itself.
+
+  Data Fabric fits companies that already have many systems, storage layers, clouds and sources, while the business needs unified access and governance.
+
+  ### How to choose an architecture
+  ![Slide: Comparison of data storage architectures](/images/articles/hse-storing-retrieving-data/slide-34.png)
+
+  There is no best architecture in a vacuum.
+
+  | Architecture | When it fits | Main risk |
+  |---|---|---|
+  | DWH | Unified reporting and KPIs | Inertia |
+  | Data Lake | Different formats and large volumes | Data swamp |
+  | Lakehouse | BI, ML and flexibility in one layer | Implementation complexity |
+  | Data Mesh | Many domains and teams | Inconsistency |
+  | Data Fabric | Distributed sources | Platform dependency |
+
+  In short:
+
+  - DWH is needed when order and unified reporting matter.
+  - Data Lake helps when many different data types need to be stored.
+  - Lakehouse gives a balance between flexibility and analytical manageability.
+  - Data Mesh is useful when the organization is large and responsibility should be distributed by domain.
+  - Data Fabric fits when data is already distributed, but a unified access layer is needed.
+
+  The choice depends on company maturity, data types, tasks, budget, team and organizational structure.
+
+  > **Questions for a manager**
+  >
+  > - Which problem matters most right now: unified KPIs, experiment speed, access to distributed sources or domain responsibility?
+  > - Is there a team that can support the chosen architecture after launch?
+  > - What will get worse if everything stays as it is for another year?
+
+  ---
+
+  ## DBMS import substitution: Russian solutions and the reality of choice
+
+  A separate topic that cannot be ignored in the Russian context is DBMS import substitution.
+
+  In recent years, it has become clear that dependence on foreign software is not only a technical risk, but also a strategic one. Limited access to updates, support, licenses, cloud services and documentation can suddenly become a business problem.
+
+  This is especially true for the public sector, financial organizations, critical infrastructure and companies with strict certification requirements.
+
+  Important: import substitution does not mean “urgently replace everything with the first domestic option”. It is a separate project where compatibility, workload, team, migration cost, support, ecosystem and regulatory requirements must be considered.
+
+  ### Why consider Russian DBMS
+
+  Russian solutions have several potential advantages:
+
+  - compliance with regulator requirements;
+  - local technical support;
+  - lower sanctions risk;
+  - understanding of Russian specifics;
+  - availability of specialists and partners;
+  - possibility of certified deliveries.
+
+  But there are challenges too:
+
+  - functional limitations;
+  - need to retrain the team;
+  - migration cost;
+  - compatibility with existing systems;
+  - ecosystem maturity;
+  - availability of drivers, monitoring tools, backup, replication;
+  - real performance under a specific workload.
+
+  So choosing a DBMS is not a choice by a “ours / not ours” table. It is both an engineering and management decision.
+
+  ### SQL / relational DBMS
+
+  The lecture material highlighted the following Russian or localized solutions in the relational DBMS segment. Before a real project, the exact certification status, versions and rights holders must be checked again, because this information changes.
+
+  | Name | Origin | Developer | Certification in the lecture material |
+  |---|---|---|---|
+  | Postgres Pro | PostgreSQL fork | Postgres Professional | FSTEC, FSB |
+  | Jatoba | PostgreSQL fork | Gazinformservice | FSTEC |
+  | Tantor | PostgreSQL fork | TANTOR Labs | FSTEC |
+  | Proxima DB | PostgreSQL fork | OrionSoft | FSTEC |
+  | Red Database | Firebird fork | RED SOFT | FSTEC |
+  | Pangolin DB | Own development | SberTech | None listed |
+  | Kvant-Hybrid | PostgreSQL fork | KVANTOM | FSTEC |
+  | Arenadata Postgres | PostgreSQL fork | Arenadata | None listed |
+  | SoQoL | Own development | RELEX | FSTEC |
+  | Linter | Own development | NIP IVK | FSTEC, FSB |
+
+  One important observation: a significant part of Russian SQL solutions is built around PostgreSQL. This is logical. PostgreSQL is a mature open-source DBMS with strong expertise, extensibility and a large ecosystem around it.
+
+  For the business, this means that migration from foreign enterprise DBMS will not always be simple, but often there is an understandable path: compatibility analysis, schema migration, rewriting procedures, performance testing, high availability setup and team training.
+
+  ### NoSQL and NewSQL
+
+  The lecture also highlighted Russian solutions and solutions with Russian roots in other DBMS classes:
+
+  | Name | Type | Origin / developer in the lecture material |
+  |---|---|---|
+  | ClickHouse | Column-oriented DBMS | Own development, ClickHouse Inc. / Yandex |
+  | Qdrant | Vector DBMS | Own development, Qdrant Team |
+  | Tarantool | In-memory DBMS | Own development, VK / ex-Mail.ru Group |
+  | YDB | NewSQL | Own development, Yandex |
+
+  Here it is especially important not to mix different solution classes.
+
+  ClickHouse does not replace PostgreSQL in a transactional system.
+  Qdrant does not replace a DWH.
+  Tarantool is not a universal data archive.
+  YDB solves distributed SQL workload tasks, but it requires a separate architectural assessment.
+
+  Each of these systems is strong in its own class of tasks.
+
+  ClickHouse is for analytics and fast aggregations.
+  Qdrant is for vector search and AI scenarios.
+  Tarantool is for high-load in-memory scenarios.
+  YDB is for distributed SQL workloads and scaling.
+
+  ### How to approach import substitution
+
+  You should not start with the question: “What should we replace Oracle with?”
+
+  It is better to move step by step.
+
+  First, describe the current landscape:
+
+  - which DBMS are used;
+  - which systems depend on them;
+  - what workloads they carry;
+  - which SLA are required;
+  - what integrations exist;
+  - which procedures, functions and extensions are used;
+  - which data is critical;
+  - which certification requirements apply.
+
+  Then divide systems by criticality.
+
+  Not all databases are equally important. There are experimental systems, reporting systems, customer services and the core of the business. Core migration is always a separate project with tests, a fallback plan and long preparation.
+
+  Then run a pilot.
+
+  Not a vendor presentation, but a real pilot on your data and your workloads.
+
+  Only after that should the decision be made.
+
+  Import substitution is not a one-time purchase. It is a program for changing the technology landscape.
+
+  ---
 
   ## Vector databases and AI
+  ![Slide: Vector databases and AI](/images/articles/hse-storing-retrieving-data/slide-39.png)
 
-  Vector databases are crucial for modern AI systems because they store embeddings: numeric representations of text, images, audio or other complex objects.
-  Instead of exact matching, they support similarity search.
-  This allows systems to find documents that are close in meaning even when the words differ.
+  Now let's move to a topic that has become especially relevant in recent years: vector databases and their connection to artificial intelligence.
 
-  This is the basis of many RAG systems.
-  Corporate documents are split into chunks, embedded and stored in a vector database.
-  When a user asks a question, the query is embedded too.
-  The vector database retrieves the most semantically relevant chunks.
-  The LLM then uses those chunks as context to generate a grounded answer.
+  When we talk about classic databases, we usually mean exact search.
 
-  This makes AI useful for internal knowledge, support, policy search, document analysis and recommendation scenarios.
-  Without clean data, reliable pipelines and controlled access, AI systems cannot produce trustworthy business value.
+  Find the customer with ID 123.
+  Show order number 456.
+  Select payments for March.
+  Filter products in the “electronics” category.
 
-  ## Main conclusions
+  But in real life, we often need not exact search, but semantic search.
 
-  Data is an asset, not a by-product.
-  Storage is only the beginning: organizations must clean, transform, catalog and govern data.
-  Architecture shapes decision speed, report quality and the ability to adapt.
-  Import substitution is a strategic risk-management topic, not a slogan.
-  AI depends on data architecture: models become useful when connected to relevant, secure and well-managed internal knowledge.
+  Find similar customer requests.
+  Show documents close to this question.
+  Find products similar by description.
+  Suggest instructions that may help in this situation.
+  Find contracts with similar terms.
 
-  Responsibility for data belongs not only to IT.
-  It belongs to business, management and analytics as well.
-  The organizations that learn to work with data deliberately will shape their future faster than those that merely store it.
+  A regular SQL database does not solve these tasks very well. It does not understand that “customer claim”, “delivery complaint” and “dissatisfaction with delivery times” can be semantically close.
+
+  For this, data is turned into vectors.
+
+  ### What vectorization is
+
+  Vectorization is the transformation of an object into a set of numbers.
+
+  Text, an image, audio, a user profile or a document becomes a numeric “fingerprint”.
+
+  The idea is that objects close in meaning end up near each other in a multidimensional space.
+
+  Analogy: imagine a map where meanings, not cities, are located near each other.
+
+  The words “automobile” and “car” will be close.
+  “Business trip” and “work travel” will also be close.
+  But “apple” will be farther away if the context is transport or documents.
+
+  A vector database stores these fingerprints and can quickly search for the nearest ones.
+
+  ### Why business needs this
+
+  Vector databases are needed where similarity matters:
+
+  - search across corporate documents;
+  - smart FAQ;
+  - recommendation systems;
+  - customer request analysis;
+  - search for similar incidents;
+  - product matching;
+  - contract processing;
+  - AI assistants;
+  - RAG systems.
+
+  And this brings us to RAG.
+
+  ### What RAG is
+
+  RAG means Retrieval Augmented Generation. In simple terms: generation enhanced with search.
+
+  The idea is simple: a language model should not answer only “from its head”. It should first find relevant fragments in your corporate data, and then use them as context for the answer.
+
+  How it works:
+
+  1. Corporate documents are split into fragments.
+  2. Each fragment is turned into a vector.
+  3. The vectors are stored in a vector database.
+  4. A user asks a question.
+  5. The question is also turned into a vector.
+  6. The vector database searches for similar fragments.
+  7. The found fragments are passed to the LLM as context.
+  8. The model generates an answer based on the found materials.
+
+  Example.
+
+  An employee asks: “How do I arrange a business trip in May?”
+
+  The system does not just generate a generic answer. It searches internal HR documents, finds the business travel policy, current rules, restrictions and the request form, and only then creates the answer.
+
+  That is why RAG is so important for business.
+
+  It lets AI work not in general, but with your knowledge, your documents and your rules.
+
+  ### Why AI does not work without data
+
+  Many companies want to introduce AI, but start with the model.
+
+  Which model should we choose?
+  Which chatbot should we install?
+  Which interface should we build?
+  Which LLM should we connect?
+
+  These are important questions, but they are not the first ones.
+
+  The first question is different:
+
+  > Where is your data, can it be trusted and can access to it be granted safely?
+
+  > **Questions for a manager**
+  >
+  > - Which internal documents should an AI system see, and which must it not see?
+  > - Who is responsible for keeping the knowledge base used by RAG up to date?
+  > - How will you know that an AI answer is based on the right source?
+
+  If documents are outdated, the knowledge base is not maintained, access rights are not described, data is duplicated and policies contradict each other, AI will simply accelerate chaos.
+
+  It will answer quickly and confidently based on bad data.
+
+  That is more dangerous than a slow manual process.
+
+  ---
+
+  ## What a manager should take away
+
+  If we compress the whole article into several management conclusions, they are these.
+
+  1. **Data is an asset.** Data should not be a by-product of system work. It should have owners, quality rules, a lifecycle and clear use cases.
+
+  2. **Responsibility for data cannot belong only to IT.** IT is responsible for infrastructure and implementation. But the business defines data meaning, metric calculation rules, priorities and value.
+
+  3. **There is no universal database.** SQL, NoSQL, NewSQL, column-oriented, graph, vector and in-memory databases are not a fashionable zoo. They are tools for different tasks.
+
+     A bad question: “Which database is better?”
+     A good question: “What task are we solving, what data do we have and what requirements do we have for speed, quality, scale and consistency?”
+
+  4. **OLTP and OLAP should be separated by meaning.** Operational systems record business events. Analytical systems help understand the whole picture.
+
+     A cash register and an analytics department are different things. A database for orders and a database for strategic reporting often should be different too.
+
+  5. **Architecture matters more than a single tool.** You can buy an expensive platform and get no result.
+     You can start with simple steps and quickly improve decision quality.
+
+     What matters is not the technology name, but how data travels from source to decision.
+
+  6. **Import substitution is a strategic project.** You cannot replace a DBMS by saying “let's install an analogue”. Workload, compatibility, team, migration, certification, support and risks must be analyzed.
+
+  7. **AI starts not with a model, but with data.** Vector databases, RAG and LLMs create major opportunities. But only if the company understands where its knowledge lives, how current it is and who is responsible for it.
+
+  ---
+
+  ## Instead of a conclusion
+
+  We started with a simple idea: data is an asset, not infrastructure.
+
+  But data does not become an asset automatically. Not because it is stored in a database. Not because BI is connected. Not because the company bought a platform or introduced AI.
+
+  Data becomes an asset when it is managed.
+
+  When it is clear who is responsible for it.
+  When there is quality.
+  When there are shared definitions.
+  When data can be found.
+  When it can be trusted.
+  When it helps make decisions.
+  When business and IT speak the same language.
+
+  A leader does not need to know every technical detail. But they do need to understand the map of the territory.
+
+  Without that map, it is very easy to end up in a situation where the company seems to have everything: CRM, ERP, reports, BI, databases, storage layers and AI pilots.
+
+  And decisions are still made by guesswork.
+
+  That is exactly what we want to avoid.
 ---
 Так получилось, что в прошлом году я читал онлайн-лекцию в ВШЭ на тему **«Хранение и получение данных»**. Это был в целом первый опыт так еще и для нетипичных для меня слушателей, так как это были не коллеги разработчики/архитекторов/дата-инженеров, а руководители разных функций крупных компаний.
 
@@ -190,8 +1246,8 @@ bodyEn: |
 
 Задача была другая: объяснить, **как устроен мир данных на уровне, достаточном для осознанного управленческого разговора**.
 
-Не на уровне «ой, это всё IT, пусть они сами разберутся».  
-И не на уровне «давайте срочно внедрим AI, потому что все внедряют».  
+Не на уровне «ой, это всё IT, пусть они сами разберутся».
+И не на уровне «давайте срочно внедрим AI, потому что все внедряют».
 А где-то посередине: чтобы руководитель понимал, какие данные есть в компании, откуда они берутся, куда текут, почему отчёты расходятся, зачем нужны хранилища, почему одна база данных не решает все задачи и почему искусственный интеллект без нормальных данных превращается в дорогую игрушку.
 
 Эта статья — расширенное сопровождение к той лекции.
@@ -214,7 +1270,7 @@ bodyEn: |
 
 Давайте начнём с фразы, которую слышали почти все:
 
-> Data is the new oil.  
+> Data is the new oil.
 > Данные — это новая нефть.
 
 Эту фразу обычно приписывают Клайву Хамби. Её повторяли так часто, что она уже успела немного надоесть. Но проблема не во фразе. Проблема в том, что многие компании произносят её вслух, но продолжают относиться к данным как к чему-то второстепенному.
@@ -398,9 +1454,9 @@ bodyEn: |
 
 Но наличие инструмента не означает зрелость работы с данными.
 
-BI может быть установлен, но показатели в отделах всё равно считаются по-разному.  
-CRM может использоваться, но менеджеры всё равно ведут «свои таблички».  
-DWH может существовать, но никто не доверяет данным.  
+BI может быть установлен, но показатели в отделах всё равно считаются по-разному.
+CRM может использоваться, но менеджеры всё равно ведут «свои таблички».
+DWH может существовать, но никто не доверяет данным.
 Отчёты могут быть автоматизированы, но бизнес-логика в них устарела.
 
 «У нас всё уже есть» — опасная фраза. После неё обычно выясняется, что есть инструменты, но нет управления.
@@ -413,28 +1469,28 @@ DWH может существовать, но никто не доверяет �
 
 Если просто собрать все данные в одно место, не описать их, не назначить владельцев, не ввести правила качества, не определить сценарии использования, то получится не Data Lake, а data swamp — болото данных.
 
-Там вроде бы всё есть, но найти ничего нельзя.  
+Там вроде бы всё есть, но найти ничего нельзя.
 А если нашёл, непонятно, можно ли этому доверять.
 
 ### Миф 5. «Мы не IT-компания, нам это не нужно»
 
 Данные нужны не только банкам, маркетплейсам и BigTech.
 
-Производство использует данные для планирования загрузки и обслуживания оборудования.  
-Логистика — для маршрутов, сроков, складских запасов.  
-HR — для анализа текучести и эффективности найма.  
-Юридические функции — для работы с договорами, рисками, претензионной практикой.  
+Производство использует данные для планирования загрузки и обслуживания оборудования.
+Логистика — для маршрутов, сроков, складских запасов.
+HR — для анализа текучести и эффективности найма.
+Юридические функции — для работы с договорами, рисками, претензионной практикой.
 Клиентский сервис — для анализа обращений и качества обслуживания.
 
 Если компания принимает решения, обслуживает клиентов, управляет ресурсами и отвечает за результат, значит данные ей нужны.
 
 ### Миф 6. «У нас и так всё работает»
 
-Работает — пока рынок стабилен.  
-Пока конкуренты не стали быстрее.  
-Пока регулятор не изменил требования.  
-Пока ключевой сотрудник с Excel-файлом не ушёл в отпуск.  
-Пока не понадобилось внедрить AI.  
+Работает — пока рынок стабилен.
+Пока конкуренты не стали быстрее.
+Пока регулятор не изменил требования.
+Пока ключевой сотрудник с Excel-файлом не ушёл в отпуск.
+Пока не понадобилось внедрить AI.
 Пока не случился кризис.
 
 Слабая работа с данными часто не видна в спокойное время. Она проявляется в момент изменения.
@@ -542,8 +1598,8 @@ HR — для анализа текучести и эффективности н
 
 Аналогия: если структурированные данные — это строгая анкета, где все поля обязательны, то полуструктурированные — анкета с блоками «по ситуации».
 
-У одного клиента есть телефон и email.  
-У другого — телефон, email, Telegram и история заказов.  
+У одного клиента есть телефон и email.
+У другого — телефон, email, Telegram и история заказов.
 У третьего — только идентификатор из внешней системы.
 
 Полуструктурированные данные очень важны для современных интеграций. Большая часть API и событийных систем работает именно так.
@@ -614,7 +1670,7 @@ HR — для анализа текучести и эффективности н
 
 Для бизнеса это не техническая деталь. От типа источника зависит, насколько быстро можно принимать решения.
 
-Если вы управляете складскими остатками, задержка в сутки может быть приемлемой.  
+Если вы управляете складскими остатками, задержка в сутки может быть приемлемой.
 Если вы управляете антифродом в платежах, задержка в сутки превращает систему в музей.
 
 > **Вопросы управленцу**
@@ -638,11 +1694,11 @@ HR — для анализа текучести и эффективности н
 
 ### Разные форматы
 
-Одна система отдаёт таблицы.  
-Другая — JSON.  
-Третья — XML.  
-Четвёртая — PDF.  
-Пятая — архив с файлами.  
+Одна система отдаёт таблицы.
+Другая — JSON.
+Третья — XML.
+Четвёртая — PDF.
+Пятая — архив с файлами.
 Шестая — поток событий.
 
 Прежде чем данные объединять, их нужно разобрать, привести к понятному виду и описать.
@@ -655,10 +1711,10 @@ HR — для анализа текучести и эффективности н
 
 ### Разные правила учёта
 
-В одной системе сумма хранится с НДС.  
-В другой — без НДС.  
-Где-то дата означает дату создания заказа.  
-Где-то — дату оплаты.  
+В одной системе сумма хранится с НДС.
+В другой — без НДС.
+Где-то дата означает дату создания заказа.
+Где-то — дату оплаты.
 Где-то — дату отгрузки.
 
 Формально поля похожи. По смыслу — разные.
@@ -667,9 +1723,9 @@ HR — для анализа текучести и эффективности н
 
 ### Разная частота обновления
 
-CRM обновляется постоянно.  
-1С выгружается ночью.  
-Партнёр присылает файл раз в неделю.  
+CRM обновляется постоянно.
+1С выгружается ночью.
+Партнёр присылает файл раз в неделю.
 Внешний API иногда недоступен.
 
 Если это не учитывать, аналитика будет показывать странные результаты. Не потому что система сломалась, а потому что данные живут в разных ритмах.
@@ -701,7 +1757,7 @@ ETL означает:
 
 Аналогия: бухгалтер сначала собирает первичные документы, проверяет их, исправляет ошибки, приводит к единому виду и только потом формирует итоговый отчёт.
 
-Плюс ETL — контроль качества до загрузки.  
+Плюс ETL — контроль качества до загрузки.
 Минус — процесс может быть медленным и менее гибким.
 
 ETL хорошо подходит для классической отчётности и ситуаций, где важна строгая подготовка данных.
@@ -718,7 +1774,7 @@ ELT меняет порядок:
 
 ELT стал особенно популярен с развитием мощных облачных хранилищ и аналитических платформ. Они позволяют быстро загрузить много данных, а потом обрабатывать их уже внутри.
 
-Плюс ELT — скорость и гибкость.  
+Плюс ELT — скорость и гибкость.
 Минус — нужно мощное и хорошо управляемое хранилище, иначе получится бардак.
 
 ### CDC: Change Data Capture
@@ -765,8 +1821,8 @@ OLTP-системы должны быть быстрыми, точными и н
 
 Аналогия: касса в магазине. Покупатель пробивает товар, платит, получает чек. Система должна мгновенно списать остаток, зафиксировать оплату и не ошибиться.
 
-Если деньги списались, а заказ не создался — это проблема.  
-Если товар продался дважды, хотя на складе был один экземпляр — это проблема.  
+Если деньги списались, а заказ не создался — это проблема.
+Если товар продался дважды, хотя на складе был один экземпляр — это проблема.
 Если касса зависла из-за аналитического отчёта — это совсем плохая история.
 
 OLTP — это про текущее состояние бизнеса.
@@ -894,7 +1950,7 @@ Key-Value — самая простая модель: есть ключ и зн�
 
 Пример: Neo4j, JanusGraph, ArangoDB, Amazon Neptune.
 
-Узел — это объект: человек, компания, товар, счёт.  
+Узел — это объект: человек, компания, товар, счёт.
 Ребро — связь: купил, знает, владеет, связан, перевёл деньги, подписан.
 
 Аналогия: карта метро. Важны не только станции, но и маршруты между ними.
@@ -920,7 +1976,7 @@ Key-Value — самая простая модель: есть ключ и зн�
 
 Их задача — искать не точное совпадение, а похожесть.
 
-Обычный поиск ищет слова.  
+Обычный поиск ищет слова.
 Векторный поиск ищет смысл.
 
 Например, запрос «как оформить командировку» может найти документ «регламент служебных поездок», даже если в нём нет точной фразы из запроса.
@@ -1046,9 +2102,9 @@ Data Mesh — это больше организационный подход, �
 
 Его идея: данные должны принадлежать бизнес-доменам. Команда, которая создаёт и понимает данные, должна отвечать за их качество, документацию и доступность.
 
-Маркетинг отвечает за маркетинговые данные.  
-Финансы — за финансовые.  
-Логистика — за логистические.  
+Маркетинг отвечает за маркетинговые данные.
+Финансы — за финансовые.
+Логистика — за логистические.
 HR — за HR-данные.
 
 Но при этом у всех есть общие стандарты: безопасность, доступ, качество, формат, SLA.
@@ -1195,16 +2251,16 @@ Data Fabric подходит компаниям, где уже много сис
 
 Здесь особенно важно не смешивать разные классы решений.
 
-ClickHouse не заменяет PostgreSQL в транзакционной системе.  
-Qdrant не заменяет DWH.  
-Tarantool не является универсальным архивом данных.  
+ClickHouse не заменяет PostgreSQL в транзакционной системе.
+Qdrant не заменяет DWH.
+Tarantool не является универсальным архивом данных.
 YDB решает задачи распределённой SQL-нагрузки, но требует отдельной архитектурной оценки.
 
 Каждая из этих систем сильна в своём классе задач.
 
-ClickHouse — аналитика и быстрые агрегации.  
-Qdrant — векторный поиск и AI-сценарии.  
-Tarantool — высоконагруженные in-memory сценарии.  
+ClickHouse — аналитика и быстрые агрегации.
+Qdrant — векторный поиск и AI-сценарии.
+Tarantool — высоконагруженные in-memory сценарии.
 YDB — распределённые SQL-нагрузки и масштабирование.
 
 ### Как подходить к импортозамещению
@@ -1245,17 +2301,17 @@ YDB — распределённые SQL-нагрузки и масштабир�
 
 Когда мы говорим о классических базах данных, обычно имеем в виду точный поиск.
 
-Найди клиента с ID 123.  
-Покажи заказ №456.  
-Выбери платежи за март.  
+Найди клиента с ID 123.
+Покажи заказ №456.
+Выбери платежи за март.
 Отфильтруй товары категории «электроника».
 
 Но в реальной жизни часто нужен не точный поиск, а поиск по смыслу.
 
-Найди похожие обращения клиентов.  
-Покажи документы, близкие к этому вопросу.  
-Найди товары, похожие по описанию.  
-Подбери инструкции, которые могут помочь в этой ситуации.  
+Найди похожие обращения клиентов.
+Покажи документы, близкие к этому вопросу.
+Найди товары, похожие по описанию.
+Подбери инструкции, которые могут помочь в этой ситуации.
 Найди договоры с похожими условиями.
 
 Обычная SQL-база не очень хорошо решает такие задачи. Она не понимает, что «претензия клиента», «жалоба на доставку» и «недовольство сроками» могут быть смыслово близкими.
@@ -1272,8 +2328,8 @@ YDB — распределённые SQL-нагрузки и масштабир�
 
 Аналогия: представьте карту, где рядом расположены не города, а смыслы.
 
-Слова «автомобиль» и «машина» будут близко.  
-«Командировка» и «служебная поездка» — тоже близко.  
+Слова «автомобиль» и «машина» будут близко.
+«Командировка» и «служебная поездка» — тоже близко.
 А «яблоко» окажется дальше, если контекст про транспорт или документы.
 
 Векторная база хранит такие отпечатки и умеет быстро искать ближайшие.
@@ -1325,9 +2381,9 @@ RAG — Retrieval Augmented Generation. По-русски можно сказа�
 
 Многие компании хотят внедрить AI, но начинают с модели.
 
-Какую модель выбрать?  
-Какой чат-бот поставить?  
-Какой интерфейс сделать?  
+Какую модель выбрать?
+Какой чат-бот поставить?
+Какой интерфейс сделать?
 Какую LLM подключить?
 
 Это важные вопросы, но не первые.
@@ -1360,14 +2416,14 @@ RAG — Retrieval Augmented Generation. По-русски можно сказа�
 
 3. **Универсальной базы данных не существует.** SQL, NoSQL, NewSQL, колоночные, графовые, векторные, in-memory базы — это не модный зоопарк, а набор инструментов под разные задачи.
 
-   Плохой вопрос: «Какая база лучше?»  
+   Плохой вопрос: «Какая база лучше?»
    Хороший вопрос: «Какую задачу мы решаем, какие данные у нас есть и какие требования к скорости, качеству, масштабу и согласованности?»
 
 4. **OLTP и OLAP нужно разделять по смыслу.** Операционные системы фиксируют события бизнеса. Аналитические системы помогают понимать картину целиком.
 
    Касса и аналитический отдел — разные сущности. База для заказов и база для стратегической отчётности тоже часто должны быть разными.
 
-5. **Архитектура важнее отдельного инструмента.** Можно купить дорогую платформу и не получить результата.  
+5. **Архитектура важнее отдельного инструмента.** Можно купить дорогую платформу и не получить результата.
    Можно начать с простых шагов и быстро улучшить качество решений.
 
    Важно не название технологии, а то, как данные проходят путь от источника до решения.
@@ -1386,12 +2442,12 @@ RAG — Retrieval Augmented Generation. По-русски можно сказа�
 
 Данные становятся активом, когда ими управляют.
 
-Когда понятно, кто за них отвечает.  
-Когда есть качество.  
-Когда есть единые определения.  
-Когда данные можно найти.  
-Когда им можно доверять.  
-Когда они помогают принимать решения.  
+Когда понятно, кто за них отвечает.
+Когда есть качество.
+Когда есть единые определения.
+Когда данные можно найти.
+Когда им можно доверять.
+Когда они помогают принимать решения.
 Когда бизнес и IT говорят на одном языке.
 
 Руководителю не нужно знать все технические детали. Но нужно понимать карту местности.
