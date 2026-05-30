@@ -1,6 +1,7 @@
 ---
-import { useTranslations, type Lang } from '../../i18n/ui';
+// biome-ignore-all lint/correctness/noUnusedVariables: Astro templates reference frontmatter variables.
 import social from '../../data/social.json';
+import { type Lang, useTranslations } from '../../i18n/ui';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -175,6 +176,7 @@ const bio = isRu ? social.bioRu : social.bio;
   .hero__visual {
     display: flex;
     justify-content: center;
+    min-width: 0;
   }
 
   .hero__code-block {
@@ -184,8 +186,8 @@ const bio = isRu ? social.bioRu : social.bio;
     padding: var(--space-8);
     width: 100%;
     max-width: 400px;
+    min-width: 0;
     position: relative;
-    overflow: hidden;
   }
 
   .hero__code-block::before {
@@ -198,7 +200,11 @@ const bio = isRu ? social.bioRu : social.bio;
     background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
   }
 
-  pre { margin: 0; overflow-x: auto; }
+  pre {
+    max-width: 100%;
+    margin: 0;
+    overflow-x: auto;
+  }
 
   code {
     font-size: var(--text-sm);
