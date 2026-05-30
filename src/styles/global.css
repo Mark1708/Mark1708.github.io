@@ -19,6 +19,25 @@ body {
   font-size: var(--text-base);
   line-height: 1.65;
   min-height: 100dvh;
+  overflow-wrap: break-word;
+}
+
+img,
+picture,
+video,
+canvas {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+svg {
+  max-width: 100%;
+}
+
+pre {
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 ::selection {
