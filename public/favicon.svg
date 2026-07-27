@@ -1,4 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="4" fill="#111827"/>
-  <text x="16" y="23" font-family="monospace" font-size="20" fill="#5b5ef4" text-anchor="middle" font-weight="bold">M</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+  <style>
+    .mark { fill: oklch(68% 0.18 260); }
+    @media (prefers-color-scheme: light) {
+      .mark { fill: oklch(45% 0.18 260); }
+    }
+  </style>
+  <g transform="translate(1.5 0)">
+    <path class="mark" d="M26.0613 19.3182H4.7461V25.7042H21.7299L17.8664 21.133H22.6081L26.4716 25.7042H26.4782V29.4139H4.7461V29.4022H0.00437294V15.6085H26.0613V19.3182ZM16.4051 13.7937H11.6444L11.6532 13.7813L4.74173 5.60465V13.7937H0V0H4.7461L16.4051 13.7937ZM26.4738 0V13.7937H21.7321V6.48289L17.4823 12.2938L14.9394 9.2874L21.7321 0H26.4738Z"/>
+  </g>
 </svg>
