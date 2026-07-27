@@ -38,10 +38,12 @@ features:
   - "Displays provider agents through a normalized AgentProvider boundary"
   - "Adds collapsible sidebar sections with neutral categories, model metadata, and alias support"
   - "Integrates with the OpenCode theme system for native TUI styling"
+  - "Listed in the curated awesome-opencode plugin directory."
 featuresRu:
   - "Показывает provider-агентов через normalized AgentProvider boundary"
   - "Добавляет сворачиваемые секции сайдбара с нейтральными категориями, model metadata и aliases"
   - "Интегрируется с системой тем OpenCode для нативного TUI-стиля"
+  - "Проект включён в курируемый каталог плагинов awesome-opencode."
 status: "active"
 startDate: "2026-05"
 image: "/images/projects/opencode-agents-sidebar/preview.png"

@@ -18,10 +18,12 @@ features:
   - "Tracks OpenAI daily cost, token consumption, and request counts inside the TUI"
   - "Shows Z.AI and GLM quota status with a two-level detail toggle"
   - "Marks stale provider data and redacts secrets for safe display"
+  - "Listed in the curated awesome-opencode plugin directory."
 featuresRu:
   - "Отслеживает ежедневные расходы OpenAI, токены и запросы прямо в TUI"
   - "Показывает квоты Z.AI и GLM с двухуровневым переключателем детализации"
   - "Помечает устаревшие данные провайдеров и скрывает секреты для безопасного отображения"
+  - "Проект включён в курируемый каталог плагинов awesome-opencode."
 status: "active"
 startDate: "2026-05"
 image: "/images/projects/opencode-usage-monitor/preview.png"
