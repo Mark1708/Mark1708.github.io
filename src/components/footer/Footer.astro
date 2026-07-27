@@ -1,0 +1,80 @@
+---
+// biome-ignore-all lint/correctness/noUnusedVariables: Astro templates reference frontmatter variables.
+import { getLangFromUrl, useTranslations } from '../../i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <a
+      class="site-footer__credit"
+      href="https://link.me/kovalev"
+      target="_blank"
+      rel="noopener"
+    >
+      <p>{t('footer.credit')}</p>
+      <span
+        class="site-footer__wordmark"
+        role="img"
+        aria-label={t('footer.wordmarkLabel')}
+      ></span>
+    </a>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--color-border);
+    padding-block: var(--space-8);
+  }
+
+  .site-footer__inner {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  .site-footer__credit {
+    align-items: center;
+    color: var(--color-text-muted);
+    display: inline-flex;
+    flex-direction: column;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    gap: var(--space-2);
+    text-align: center;
+  }
+
+  .site-footer__credit:hover {
+    color: var(--color-accent);
+  }
+
+  .site-footer__wordmark {
+    -webkit-mask-image: url('/brand/kovalev-art-wordmark.svg');
+    -webkit-mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    aspect-ratio: 135 / 26;
+    background-color: color-mix(in oklch, var(--color-accent) 55%, var(--color-text-muted));
+    display: block;
+    mask-image: url('/brand/kovalev-art-wordmark.svg');
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
+    width: 80px;
+  }
+
+  @media (max-width: 640px) {
+    .site-footer {
+      padding-block: var(--space-6);
+    }
+  }
+
+  @media print {
+    .site-footer {
+      display: none;
+    }
+  }
+</style>
