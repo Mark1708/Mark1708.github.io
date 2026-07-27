@@ -24,6 +24,10 @@
       "type": "string",
       "format": "uri"
     },
+    "awesomeOpenCodeUrl": {
+      "type": "string",
+      "format": "uri"
+    },
     "featured": {
       "default": false,
       "type": "boolean"
@@ -48,6 +52,74 @@
     },
     "demonstratesRu": {
       "type": "string"
+    },
+    "problem": {
+      "type": "string"
+    },
+    "problemRu": {
+      "type": "string"
+    },
+    "architecture": {
+      "type": "string"
+    },
+    "architectureRu": {
+      "type": "string"
+    },
+    "decisions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "decisionsRu": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tradeoffs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tradeoffsRu": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "role": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "roleRu": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "futureImprovements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "futureImprovementsRu": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "demoUrl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "docsUrl": {
+      "type": "string",
+      "format": "uri"
     },
     "features": {
       "type": "array",
