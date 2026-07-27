@@ -27,6 +27,7 @@ const projects = defineCollection({
     bodyRu: z.string().optional(),
     technologies: z.array(z.string()),
     githubUrl: z.string().url().optional(),
+    awesomeOpenCodeUrl: z.string().url().optional(),
     featured: z.boolean().default(false),
     order: z.number(),
     stars: z.number().optional(),

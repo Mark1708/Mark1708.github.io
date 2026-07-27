@@ -8,6 +8,7 @@ bodyRu: |
   Сайдбар группирует агентов в нейтральные категории, поддерживает сворачиваемые секции, показывает provider/model/variant/fallback metadata, работает с алиасами и интегрируется с системой тем OpenCode, чтобы выглядеть как нативная часть TUI.
 technologies: ["TypeScript", "Bun", "SolidJS", "OpenCode Plugin API"]
 githubUrl: "https://github.com/Mark1708/opencode-agents-sidebar"
+awesomeOpenCodeUrl: "https://github.com/awesome-opencode/awesome-opencode"
 featured: false
 order: 3
 summary: "OpenCode TUI sidebar for provider agent browsing"

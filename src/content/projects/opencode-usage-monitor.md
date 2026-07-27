@@ -8,6 +8,7 @@ bodyRu: |
   Для Z.AI и GLM отображается состояние квот с двухуровневым переключателем детализации и индикаторами устаревших данных. Секреты маскируются перед выводом, поэтому информацию можно безопасно показывать в интерфейсе.
 technologies: ["TypeScript", "Bun", "OpenCode Plugin API"]
 githubUrl: "https://github.com/Mark1708/opencode-usage-monitor"
+awesomeOpenCodeUrl: "https://github.com/awesome-opencode/awesome-opencode"
 featured: false
 order: 4
 summary: "OpenCode sidebar for API cost and quota tracking"

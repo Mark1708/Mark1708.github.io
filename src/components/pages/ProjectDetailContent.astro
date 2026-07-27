@@ -29,7 +29,7 @@ const {
   role,
   futureImprovements,
 } = content;
-const { technologies, githubUrl, demoUrl, docsUrl, stars } = project.data;
+const { technologies, githubUrl, awesomeOpenCodeUrl, demoUrl, docsUrl, stars } = project.data;
 
 const pageTitle = `${title} — Mark Gurianov`;
 const pageDescription = summary || description;
@@ -66,6 +66,11 @@ const jsonLd = {
         {githubUrl && (
           <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="project-detail__github">
             {t('project.viewGithub')} ↗
+          </a>
+        )}
+        {awesomeOpenCodeUrl && (
+          <a href={awesomeOpenCodeUrl} target="_blank" rel="noopener noreferrer" class="project-detail__github">
+            {t('project.viewAwesomeOpenCode')} ↗
           </a>
         )}
         {demoUrl && (
