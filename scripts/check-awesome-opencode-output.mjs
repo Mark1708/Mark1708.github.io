@@ -24,8 +24,8 @@ function hasRel(tag, value) {
 }
 
 function checkAwesomeOpencodeCTA(html, page, expectedLabel) {
-  // Find all anchor tags with the correct href
-  const anchorPattern = /<a\b[^>]*href=["']https:\/\/github\.com\/awesome-opencode\/awesome-opencode["'][^>]*>/g;
+  // Find all complete anchor tags with the correct href (including closing </a>)
+  const anchorPattern = /<a\b[^>]*href=["']https:\/\/github\.com\/awesome-opencode\/awesome-opencode["'][\s\S]*?<\/a>/g;
   const anchors = [...html.matchAll(anchorPattern)].map((m) => m[0]);
 
   // Assert exactly one anchor exists
@@ -35,18 +35,22 @@ function checkAwesomeOpencodeCTA(html, page, expectedLabel) {
 
   const anchor = anchors[0];
 
+  // Extract the opening tag for attribute checks
+  const openingTagMatch = anchor.match(/^<a\b[^>]*>/);
+  const openingTag = openingTagMatch?.[0] ?? anchor;
+
   // Check class contains project-detail__github
-  assert(hasClass(anchor, 'project-detail__github'), `${page}: anchor must have class 'project-detail__github'`);
+  assert(hasClass(openingTag, 'project-detail__github'), `${page}: anchor must have class 'project-detail__github'`);
 
   // Check target="_blank"
-  assert(hasAttribute(anchor, 'target', '_blank'), `${page}: anchor must have target="_blank"`);
+  assert(hasAttribute(openingTag, 'target', '_blank'), `${page}: anchor must have target="_blank"`);
 
   // Check rel contains both noopener and noreferrer
-  assert(hasRel(anchor, 'noopener'), `${page}: anchor must have rel="noopener"`);
-  assert(hasRel(anchor, 'noreferrer'), `${page}: anchor must have rel="noreferrer"`);
+  assert(hasRel(openingTag, 'noopener'), `${page}: anchor must have rel="noopener"`);
+  assert(hasRel(openingTag, 'noreferrer'), `${page}: anchor must have rel="noreferrer"`);
 
-  // Check visible label (text content)
-  const labelMatch = anchor.match(/>([^<]+)</);
+  // Check visible label (text content) - extract robustly from full anchor
+  const labelMatch = anchor.match(/>([\s\S]*?)<\/a>/);
   const actualLabel = labelMatch?.[1]?.trim();
   assert(actualLabel === expectedLabel, `${page}: expected label "${expectedLabel}", got "${actualLabel}"`);
 }
