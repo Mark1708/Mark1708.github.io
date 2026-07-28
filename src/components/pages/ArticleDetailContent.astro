@@ -447,9 +447,65 @@ const jsonLd = {
   <style>
     /* ─── Layout ─── */
     .article-detail {
+      --article-question-callout-bg: var(--color-accent-glow);
+      --article-question-callout-accent: oklch(70% 0.15 80);
+      --article-insight-callout-bg: var(--color-surface-2);
+      --article-insight-callout-accent: oklch(60% 0.1 260);
+      --article-code-block-bg: #0f172a;
+      --article-code-block-text: #e5e7eb;
+      --article-inline-code-bg: var(--color-surface-2);
+      --article-inline-code-text: var(--color-text);
+      --article-scrollbar-track: transparent;
+      --article-scrollbar-thumb: rgba(96, 165, 250, 0.35);
+      --article-scrollbar-thumb-webkit: color-mix(in oklch, var(--color-border) 70%, transparent);
+      --article-toc-track: rgba(148, 163, 184, 0.24);
+      --article-toc-dot: rgba(148, 163, 184, 0.55);
+      --article-toc-dot-hover: rgba(229, 231, 235, 0.85);
+      --article-toc-active: var(--color-accent);
+      --article-toc-glow: rgba(96, 165, 250, 0.18);
       max-width: 720px;
       margin: 0 auto;
       padding: var(--space-8) var(--space-4);
+    }
+
+    :global([data-theme="light"]) .article-detail {
+      --article-question-callout-bg: var(--color-accent-glow);
+      --article-question-callout-accent: oklch(70% 0.15 80);
+      --article-insight-callout-bg: var(--color-surface-2);
+      --article-insight-callout-accent: oklch(60% 0.1 260);
+      --article-code-block-bg: #0f172a;
+      --article-code-block-text: #e5e7eb;
+      --article-inline-code-bg: var(--color-surface-2);
+      --article-inline-code-text: var(--color-text);
+      --article-scrollbar-track: transparent;
+      --article-scrollbar-thumb: rgba(96, 165, 250, 0.35);
+      --article-scrollbar-thumb-webkit: color-mix(in oklch, var(--color-border) 70%, transparent);
+      --article-toc-track: rgba(148, 163, 184, 0.24);
+      --article-toc-dot: rgba(148, 163, 184, 0.55);
+      --article-toc-dot-hover: rgba(229, 231, 235, 0.85);
+      --article-toc-active: var(--color-accent);
+      --article-toc-glow: rgba(96, 165, 250, 0.18);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :global(:root:not([data-theme])) .article-detail {
+        --article-question-callout-bg: var(--color-accent-glow);
+        --article-question-callout-accent: oklch(70% 0.15 80);
+        --article-insight-callout-bg: var(--color-surface-2);
+        --article-insight-callout-accent: oklch(60% 0.1 260);
+        --article-code-block-bg: #0f172a;
+        --article-code-block-text: #e5e7eb;
+        --article-inline-code-bg: var(--color-surface-2);
+        --article-inline-code-text: var(--color-text);
+        --article-scrollbar-track: transparent;
+        --article-scrollbar-thumb: rgba(96, 165, 250, 0.35);
+        --article-scrollbar-thumb-webkit: color-mix(in oklch, var(--color-border) 70%, transparent);
+        --article-toc-track: rgba(148, 163, 184, 0.24);
+        --article-toc-dot: rgba(148, 163, 184, 0.55);
+        --article-toc-dot-hover: rgba(229, 231, 235, 0.85);
+        --article-toc-active: var(--color-accent);
+        --article-toc-glow: rgba(96, 165, 250, 0.18);
+      }
     }
 
     .article-detail__layout {
@@ -739,13 +795,13 @@ const jsonLd = {
     }
 
     .article-detail__body :global(blockquote[data-callout="question"]) {
-      background: var(--color-accent-glow);
-      border-left-color: oklch(70% 0.15 80);
+      background: var(--article-question-callout-bg);
+      border-left-color: var(--article-question-callout-accent);
     }
 
     .article-detail__body :global(blockquote[data-callout="insight"]) {
-      background: var(--color-surface-2);
-      border-left-color: oklch(60% 0.1 260);
+      background: var(--article-insight-callout-bg);
+      border-left-color: var(--article-insight-callout-accent);
     }
 
     .article-detail__body :global(blockquote p:last-child) {
@@ -864,17 +920,17 @@ const jsonLd = {
 
     /* ─── Body: code ─── */
     .article-detail__body :global(code) {
-      background: var(--color-surface-2);
+      background: var(--article-inline-code-bg);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-sm);
-      color: var(--color-text);
+      color: var(--article-inline-code-text);
       font-family: var(--font-mono);
       font-size: 0.9em;
       padding: 0.1em 0.35em;
     }
 
     .article-detail__body :global(pre) {
-      background: #0f172a;
+      background: var(--article-code-block-bg);
       border: 1px solid var(--color-border);
       border-radius: var(--radius-lg);
       overflow-x: auto;
@@ -884,7 +940,7 @@ const jsonLd = {
     .article-detail__body :global(pre code) {
       background: transparent;
       border: 0;
-      color: #e5e7eb;
+      color: var(--article-code-block-text);
       display: block;
       font-size: var(--text-sm);
       line-height: 1.7;
@@ -988,7 +1044,7 @@ const jsonLd = {
       overflow-y: auto;
       padding: var(--space-1) var(--toc-track-padding-right) var(--space-1) 0;
       scrollbar-width: thin;
-      scrollbar-color: rgba(96, 165, 250, 0.35) transparent;
+      scrollbar-color: var(--article-scrollbar-thumb) var(--article-scrollbar-track);
     }
 
     .article-detail__toc-track::before {
@@ -998,7 +1054,7 @@ const jsonLd = {
       right: var(--toc-axis-right);
       width: 1px;
       height: var(--toc-line-height);
-      background: rgba(148, 163, 184, 0.24);
+      background: var(--article-toc-track);
       pointer-events: none;
       z-index: 0;
     }
@@ -1008,12 +1064,12 @@ const jsonLd = {
     }
 
     .article-detail__toc-track::-webkit-scrollbar-thumb {
-      background: color-mix(in oklch, var(--color-border) 70%, transparent);
+      background: var(--article-scrollbar-thumb-webkit);
       border-radius: var(--radius-sm);
     }
 
     .article-detail__toc-track::-webkit-scrollbar-track {
-      background: transparent;
+      background: var(--article-scrollbar-track);
     }
 
     .article-detail__toc-fill {
@@ -1081,7 +1137,7 @@ const jsonLd = {
 
     .article-detail__toc-dot {
       align-self: center;
-      background: rgba(148, 163, 184, 0.55);
+      background: var(--article-toc-dot);
       border-radius: 999px;
       box-shadow: 0 0 0 3px var(--color-bg);
       display: block;
@@ -1111,7 +1167,7 @@ const jsonLd = {
     }
 
     .article-detail__toc-item:hover .article-detail__toc-dot {
-      background: rgba(229, 231, 235, 0.85);
+      background: var(--article-toc-dot-hover);
     }
 
     .article-detail__toc-item--active {
@@ -1133,10 +1189,10 @@ const jsonLd = {
     }
 
     .article-detail__toc-item--active .article-detail__toc-dot {
-      background: var(--color-accent);
+      background: var(--article-toc-active);
       box-shadow:
         0 0 0 3px var(--color-bg),
-        0 0 0 5px rgba(96, 165, 250, 0.18);
+        0 0 0 5px var(--article-toc-glow);
       height: 9px;
       width: 9px;
     }
