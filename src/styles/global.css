@@ -41,18 +41,18 @@ pre {
 }
 
 ::selection {
-  background: var(--color-accent-dim);
+  background: var(--color-primary-subtle);
   color: var(--color-text);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-focus-ring);
   outline-offset: 3px;
   border-radius: var(--radius-sm);
 }
 
 a {
-  color: var(--color-accent);
+  color: var(--color-link);
   text-decoration: none;
   transition: opacity var(--duration-fast) var(--ease-out);
 }
