@@ -125,19 +125,22 @@ const isCurrentSection = (section: 'experience' | 'projects' | 'articles' | 'res
 
 <script define:vars={{ resumeUrl }}>
   const THEME_KEY = 'portfolio-theme';
+  const THEME_CHANGE_EVENT = 'portfolio-theme-change';
 
   function readStorage(key) { try { return localStorage.getItem(key); } catch { return null; } }
   function writeStorage(key, value) { try { localStorage.setItem(key, value); } catch { /* noop */ } }
 
   /* ── Theme ── */
   function applyTheme(value) {
+    const mode = value === 'light' || value === 'dark' || value === 'system' ? value : 'system';
     const root = document.documentElement;
     root.removeAttribute('data-theme');
-    if (value !== 'system') root.setAttribute('data-theme', value);
+    if (mode !== 'system') root.setAttribute('data-theme', mode);
     document.querySelectorAll('.theme-btn').forEach(btn => {
-      btn.classList.toggle('toggle-btn--active', btn.dataset.themeValue === value);
+      btn.classList.toggle('toggle-btn--active', btn.dataset.themeValue === mode);
     });
-    writeStorage(THEME_KEY, value);
+    writeStorage(THEME_KEY, mode);
+    window.dispatchEvent(new CustomEvent(THEME_CHANGE_EVENT, { detail: mode }));
   }
 
   applyTheme(readStorage(THEME_KEY) ?? 'system');

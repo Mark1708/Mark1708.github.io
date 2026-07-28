@@ -8,7 +8,6 @@ interface Props {
   title?: string;
   description?: string;
   lang?: string;
-  image?: string;
   ogType?: string;
   articlePublishedTime?: string;
   articleTags?: string[];
@@ -18,7 +17,6 @@ const {
   title = 'Mark Gurianov — Team Lead',
   description = 'Backend developer with 5+ years of experience. Java, Spring Boot, distributed systems. Stavropol, Russia.',
   lang = 'en',
-  image = '/profile.jpg',
   ogType = 'website',
   articlePublishedTime,
   articleTags,
@@ -27,7 +25,17 @@ const {
 const siteUrl = 'https://mark1708.ru';
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).href;
 const isRu = lang === 'ru';
-const socialImageAlt = isRu ? 'Портрет Марка Гурьянова' : 'Portrait of Mark Gurianov';
+const socialImageUrl = `${siteUrl}/images/social/og-${isRu ? 'ru' : 'en'}.png`;
+const socialImageAlt = isRu
+  ? 'Техническое портфолио Марка Гурьянова — от тимлида к архитектору решений'
+  : 'Mark Gurianov technical portfolio — Team Lead to Solution Architect';
+
+// Phase 5 current-violet browser chrome. Phase 8 remaps light/dark to #F5F7F8/#020202.
+const themeColors = Object.freeze({
+  light: '#F3F5F9',
+  dark: '#020306',
+});
+const initialThemeColor = themeColors.dark;
 
 const enPath = isRu
   ? Astro.url.pathname.replace(/^\/ru(\/|$)/, '/') || '/'
@@ -110,9 +118,10 @@ const breadcrumbLd = {
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:locale" content={isRu ? 'ru_RU' : 'en_US'} />
     <meta property="og:locale:alternate" content={isRu ? 'en_US' : 'ru_RU'} />
-    <meta property="og:image" content={siteUrl + image} />
-    <meta property="og:image:width" content="1496" />
-    <meta property="og:image:height" content="1496" />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={socialImageAlt} />
     <meta property="og:site_name" content="Mark Gurianov" />
     {ogType === 'article' && articlePublishedTime && (
@@ -121,13 +130,18 @@ const breadcrumbLd = {
     {ogType === 'article' && articleTags && articleTags.map(tag => (
       <meta property="article:tag" content={tag} />
     ))}
-    <meta name="theme-color" content="#111827" />
+    <meta
+      name="theme-color"
+      content={initialThemeColor}
+      data-theme-color-light={themeColors.light}
+      data-theme-color-dark={themeColors.dark}
+    />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={siteUrl + image} />
+    <meta name="twitter:image" content={socialImageUrl} />
     <meta name="twitter:image:alt" content={socialImageAlt} />
 
     <!-- JSON-LD -->
@@ -144,10 +158,59 @@ const breadcrumbLd = {
     <!-- Anti-flash theme script -->
     <script is:inline>
       (function() {
-        var saved = localStorage.getItem('portfolio-theme') || 'system';
-        if (saved !== 'system') {
-          document.documentElement.setAttribute('data-theme', saved);
+        var THEME_KEY = 'portfolio-theme';
+        var THEME_CHANGE_EVENT = 'portfolio-theme-change';
+        var themeColorMeta = document.querySelector('meta[name="theme-color"]');
+        var themeColors = Object.freeze({
+          light: themeColorMeta.dataset.themeColorLight,
+          dark: themeColorMeta.dataset.themeColorDark
+        });
+        var systemPreference = window.matchMedia('(prefers-color-scheme: dark)');
+
+        function normalizeTheme(value) {
+          return value === 'light' || value === 'dark' || value === 'system' ? value : 'system';
         }
+
+        function readSavedTheme() {
+          try {
+            return normalizeTheme(localStorage.getItem('portfolio-theme'));
+          } catch (error) {
+            return 'system';
+          }
+        }
+
+        function resolveTheme(mode) {
+          return mode === 'system' ? (systemPreference.matches ? 'dark' : 'light') : mode;
+        }
+
+        function updateThemeColor(resolvedTheme) {
+          themeColorMeta.content = themeColors[resolvedTheme];
+          document.documentElement.style.colorScheme = resolvedTheme;
+        }
+
+        function applyThemeMode(mode) {
+          currentMode = normalizeTheme(mode);
+          document.documentElement.removeAttribute('data-theme');
+          if (currentMode !== 'system') {
+            document.documentElement.setAttribute('data-theme', currentMode);
+          }
+          updateThemeColor(resolveTheme(currentMode));
+        }
+
+        var currentMode = readSavedTheme();
+        applyThemeMode(currentMode);
+
+        window.addEventListener(THEME_CHANGE_EVENT, function(event) {
+          applyThemeMode(event.detail);
+        });
+
+        window.addEventListener('storage', function(event) {
+          if (event.key === THEME_KEY) applyThemeMode(event.newValue);
+        });
+
+        systemPreference.addEventListener('change', function() {
+          if (currentMode === 'system') updateThemeColor(resolveTheme(currentMode));
+        });
       })();
     </script>
   </head>
